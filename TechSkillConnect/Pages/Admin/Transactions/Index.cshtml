@@ -1,0 +1,167 @@
+﻿@page
+@model TechSkillConnect.Pages.Admin.Transactions.IndexModel
+
+@{
+    ViewData["Title"] = "Subscription Transactions";
+}
+
+<h1>Subscription Transactions</h1>
+
+<p>
+    <a asp-page="Create" class="btn btn-primary">Create New</a>
+</p>
+
+<!-- 🔹 Search and Filter Form -->
+<form method="get">
+    <div class="form-group">
+        <label>Search Transation:</label>
+        <input asp-for="SearchString" class="form-control" placeholder="Enter Subscription Status, Date or Tutor Email" />
+    </div>
+
+    <div class="form-group">
+        <label>Filter by Subscription Status:</label>
+        <select asp-for="SelectedSubscriptionStatus" asp-items=" Model.SubscriptionStatusOptions" class="form-control">
+            <option value="">All</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Apply Filters</button>
+
+
+
+</form>
+
+@if (Model.Transactions != null && Model.Transactions.Any())
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>
+                    <a asp-page="./Index" asp-route-sortOrder="@Model.PaymentIDSort" 
+                      asp-route-currentFilter="@Model.CurrentFilter"
+                      class="sort-link">
+                        <span>@Html.DisplayNameFor(model => model.Transactions.First().PaymentID)</span>
+                        <i class="fa fa-fw fa-sort"></i>
+                    </a>
+                </th>
+                <th>
+                    <a asp-page="./Index" asp-route-sortOrder="@Model.PaymentTimestampSort"
+                      asp-route-currentFilter="@Model.CurrentFilter"
+                      class="sort-link">
+                        <span>@Html.DisplayNameFor(model => model.Transactions.First().Payment_timestamp)</span>
+                        <i class="fa fa-fw fa-sort"></i>
+                    </a>
+                </th>
+                <th>
+                    <a asp-page="./Index" asp-route-sortOrder="@Model.SubFeeSort"
+                      asp-route-currentFilter="@Model.CurrentFilter"
+                      class="sort-link">
+                        <span>@Html.DisplayNameFor(model => model.Transactions.First().Sub_Fee)</span>
+                        <i class="fa fa-fw fa-sort"></i>
+                    </a>
+                </th>
+                <th>
+                    <a asp-page="./Index" asp-route-sortOrder="@Model.SubStatusSort"
+                      asp-route-currentFilter="@Model.CurrentFilter"
+                      class="sort-link">
+                        <span>@Html.DisplayNameFor(model => model.Transactions.First().Sub_status)</span>
+                        <i class="fa fa-fw fa-sort"></i>
+                    </a>
+                </th>
+                <th>
+                    <a asp-page="./Index" asp-route-sortOrder="@Model.SubStartDateSort"
+                      asp-route-currentFilter="@Model.CurrentFilter"
+                      class="sort-link">
+                        <span>@Html.DisplayNameFor(model => model.Transactions.First().Sub_start_date)</span>
+                        <i class="fa fa-fw fa-sort"></i>
+                    </a>
+                </th>
+                <th>
+                    <a asp-page="./Index" asp-route-sortOrder="@Model.SubEndDateSort"
+                      asp-route-currentFilter="@Model.CurrentFilter"
+                      class="sort-link">
+                        <span>@Html.DisplayNameFor(model => model.Transactions.First().Sub_end_date)</span>
+                        <i class="fa fa-fw fa-sort"></i>
+                    </a>
+                </th>
+                <th>
+                    <a asp-page="./Index" asp-route-sortOrder="@Model.TutorEmailSort" 
+                      asp-route-currentFilter="@Model.CurrentFilter"
+                      class="sort-link">
+                        Tutor Email
+                        <i class="fa fa-fw fa-sort"></i>
+                    </a>
+                </th>
+           
+                <th>Actions</th>
+            </tr>
+
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Transactions)
+            {
+                <tr>
+                    <td>@item.PaymentID</td>
+                    <td>@item.Payment_timestamp</td>
+                    <td>@item.Sub_Fee</td>
+                    <td>@item.Sub_status</td>
+                    <td>@item.Sub_start_date</td>
+                    <td>@item.Sub_end_date</td>
+                    <td>@item.Tutor?.TutorEmail</td>
+                    <td>
+                        <a asp-page="./Edit" asp-route-id="@item.TransactionID" class="btn btn-sm btn-warning">Edit</a>
+                        <a asp-page="./Details" asp-route-id="@item.TransactionID" class="btn btn-sm btn-info">Details</a>
+                        <a asp-page="./Delete" asp-route-id="@item.TransactionID" class="btn btn-sm btn-danger">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No transactions found.</p>
+}
+
+@if (Model.Transactions != null && Model.Transactions.Any())
+{
+
+
+ 
+    var prevDisabled = !Model.Transactions.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.Transactions.HasNextPage ? "disabled" : "";
+
+
+<nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
+        <li class="page-item @(Model.Transactions.HasPreviousPage ? "" : "disabled")">
+            <a class="page-link" asp-page="./Index"
+               asp-route-sortOrder="@Model.CurrentSort"
+               asp-route-pageIndex="@(Model.Transactions.PageIndex - 1)"
+               asp-route-currentFilter="@Model.CurrentFilter"
+               aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+                <span class="visually-hidden">Previous</span>
+            </a>
+        </li>
+
+        <li class="page-item disabled">
+            <span class="page-link">
+                Page @Model.Transactions.PageIndex
+            </span>
+        </li>
+
+        <li class="page-item @(Model.Transactions.HasNextPage ? "" : "disabled")">
+            <a class="page-link" asp-page="./Index"
+               asp-route-sortOrder="@Model.CurrentSort"
+               asp-route-pageIndex="@(Model.Transactions.PageIndex + 1)"
+               asp-route-currentFilter="@Model.CurrentFilter"
+               aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+                <span class="visually-hidden">Next</span>
+            </a>
+        </li>
+    </ul>
+</nav>
+}
+

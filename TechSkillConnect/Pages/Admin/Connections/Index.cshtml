@@ -1,0 +1,113 @@
+﻿@page
+@model TechSkillConnect.Pages.Admin.Connections.IndexModel
+
+@{
+    ViewData["Title"] = "Connections Index";
+}
+
+<h1>Connections Index</h1>
+
+<p>
+    <a asp-page="Create" class="btn btn-primary">Create New</a>
+</p>
+
+<!-- 🔹 Search and Filter Form -->
+<form method="get">
+    <div class="form-group">
+        <label>Search Connection:</label>
+        <input asp-for="SearchString" class="form-control" placeholder="Enter Email or Date" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Apply Filters</button>
+
+
+</form>
+
+@if (Model.Connections != null && Model.Connections.Any())
+{
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>
+                <a asp-page="./Index" asp-route-sortOrder="@Model.ConnectionDateSort" 
+                asp-route-currentFilter="@Model.CurrentFilter"
+                class="sort-link">
+                    @Html.DisplayNameFor(model => model.Connections[0].ConnectionDate)
+                    <i class="fa fa-fw fa-sort"></i>
+                </a>
+            </th>
+            <th>
+                <a asp-page="./Index" asp-route-sortOrder="@Model.TutorEmailSort" 
+                asp-route-currentFilter="@Model.CurrentFilter"
+                class="sort-link">
+                    Tutor Email
+                    <i class="fa fa-fw fa-sort"></i>
+                </a>
+            </th>
+            <th>
+                <a asp-page="./Index" asp-route-sortOrder="@Model.LearnerEmailSort"
+                   asp-route-currentFilter="@Model.CurrentFilter" 
+                   class="sort-link">
+                    Learner Email
+                    <i class="fa fa-fw fa-sort"></i>
+                </a>
+            </th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var item in Model.Connections)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.ConnectionDate)</td>
+                <td>@Html.DisplayFor(modelItem => item.Tutor.TutorEmail)</td>
+                <td>@Html.DisplayFor(modelItem => item.Learner.LearnerEmail)</td>
+                <td>
+                    <a asp-page="./Edit" asp-route-id="@item.ConnectionID" class="btn btn-sm btn-warning">Edit</a>
+                    <a asp-page="./Details" asp-route-id="@item.ConnectionID" class="btn btn-sm btn-info">Details</a>
+                    <a asp-page="./Delete" asp-route-id="@item.ConnectionID" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+
+    var prevDisabled = !Model.Connections.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.Connections.HasNextPage ? "disabled" : "";
+
+
+<nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
+        <li class="page-item @(Model.Connections.HasPreviousPage ? "" : "disabled")">
+            <a class="page-link" asp-page="./Index"
+               asp-route-sortOrder="@Model.CurrentSort"
+               asp-route-pageIndex="@(Model.Connections.PageIndex - 1)"
+               asp-route-currentFilter="@Model.CurrentFilter"
+               aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+                <span class="visually-hidden">Previous</span>
+            </a>
+        </li>
+
+        <li class="page-item disabled">
+            <span class="page-link">
+                Page @Model.Connections.PageIndex
+            </span>
+        </li>
+
+        <li class="page-item @(Model.Connections.HasNextPage ? "" : "disabled")">
+            <a class="page-link" asp-page="./Index"
+               asp-route-sortOrder="@Model.CurrentSort"
+               asp-route-pageIndex="@(Model.Connections.PageIndex + 1)"
+               asp-route-currentFilter="@Model.CurrentFilter"
+               aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+                <span class="visually-hidden">Next</span>
+            </a>
+        </li>
+    </ul>
+</nav>
+}

@@ -1,0 +1,81 @@
+@page
+@model TechSkillConnect.Pages.Tutorpage.TutorCreatingProfilePIModel
+
+@{
+    ViewData["Title"] = "Creating Profile - Personal Information";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creating Profile - Personal Information</title>
+</head>
+<body>
+    <div class="new-container">
+        <header>
+            <h1>Personal Information</h1>
+        </header>
+    </div>
+
+    <div class="email-signup-container">
+        <p>Start creating your public tutor profile by filling in the information below.</p>
+
+        <form method="post">
+            <div class="form-group">
+                <label for="tutorID">Tutor ID</label>
+                <input type="text" id="tutorID" value="AUTO_GENERATED_ID" disabled>
+            </div>
+
+            <div class="form-group">
+                <label for="firstName">First Name</label>
+                <input type="text" id="firstName" asp-for="Tutor.Tutor_firstname" placeholder="Enter your first name" required>
+                <span asp-validation-for="Tutor.Tutor_firstname" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="lastName">Last Name</label>
+                <input type="text" id="lastName" asp-for="Tutor.Tutor_lastname" placeholder="Enter your last name" required>
+                <span asp-validation-for="Tutor.Tutor_lastname" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="country">Country of Birth</label>
+                <select id="country" asp-for="Tutor.CountryOfBirth" required>
+                    <option value="">Choose country...</option>
+                    <option value="Canada">Canada</option>
+                    <option value="United States">United States</option>
+                    <option value="United Kingdom">Kingdom</option>
+                </select>
+                <span asp-validation-for="Tutor.CountryOfBirth" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="phoneNumber"> Phone Number</label>
+                <input type="tel" id="phoneNumber" asp-for="Tutor.Tutor_phone" class="funiform-input"
+                       placeholder="Enter phone number (optional)">
+                <span asp-validation-for="Tutor.Tutor_phone" class="text-danger"></span>
+            </div>
+
+
+
+            <div class="button-container">
+                <button type="button" class="btn btn-success" onclick="goBack()">Back</button>
+                <button type="submit" class="button button-next">Next</button>
+            </div>
+            <script>
+                function goBack() {
+                    window.history.back();
+                }
+            </script>
+        </form>
+    </div>
+</body>
+</html>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

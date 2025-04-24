@@ -1,0 +1,79 @@
+﻿@page
+@model TechSkillConnect.Pages.Learnerpage.learner_sign_up_pageModel
+
+@{
+    ViewData["Title"] = "Learner Sign Up";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learner Sign Up</title>
+    <link rel="stylesheet" href="/css/site.css">
+
+    <script>
+        function validateCheckbox() {
+            const termsCheckbox = document.getElementById("termsCheckbox");
+            if (termsCheckbox.checked) {
+                // Redirect to the profile creation page if checkbox is checked
+                location.href = 'learner_creating_profile_PI.html';
+            } else {
+                // Alert if checkbox is not checked
+                alert("Please agree to the Terms and Conditions before proceeding.");
+            }
+        }
+    </script>
+</head>
+<body>
+
+    <header>
+        <img src="/images/learning_connect.gif" alt="Learning Connect Logo">
+        <h1>Learner Sign Up</h1>
+    </header>
+
+    <div class="content-section">
+        Sign Up to Learning Connect as a Learner
+    </div>
+
+    <div class="signup-method-container">
+        <div class="signup-method">Sign Up with Google</div>
+        <div class="signup-method">Sign Up with Facebook</div>
+    </div>
+
+    <div class="email-signup-container">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" placeholder="Enter your username">
+
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="Enter your password">
+
+        <label for="email">Email Address</label>
+        <input type="email" id="email" name="email" placeholder="Enter your email address">
+    </div>
+
+    <div class="button-container">
+        <button onclick="validateCheckbox()">Create Account</button>
+
+        <div class="terms-container">
+
+            <input type="checkbox" id="termsCheckbox">
+            I agree to the <a href="terms.html" target="_blank">Learning Connect Terms and Conditions</a>.
+
+        </div>
+    </div>
+
+    <!-- Login Link Button -->
+    <div class="button-container">
+        <button onclick="location.href='learner_mainpage_login.html'">Already have an account? Log In</button>
+    </div>
+
+</body>
+</html>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

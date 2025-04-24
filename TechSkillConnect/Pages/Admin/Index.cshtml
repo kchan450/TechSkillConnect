@@ -1,0 +1,64 @@
+﻿@page
+@model TechSkillConnect.Pages.Admin.IndexModel
+
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+
+<style>
+    .admin-tile {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 200px;
+        height: 200px;
+        text-align: center;
+        border-radius: 15px;
+        text-decoration: none;
+        font-weight: bold;
+        font-size: 18px;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .admin-tile:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        text-decoration: none;
+    }
+</style>
+
+
+<h2 class="mb-4 text-primary fw-bold text-center">Admin Dashboard</h2>
+
+
+<div class="row g-4">
+    <div class="d-flex flex-wrap gap-4 justify-content-center">
+        <a asp-page="/Admin/Tutors/Index" class="admin-tile bg-primary text-white">
+            <i class="fa fa-users fa-2x mb-2"></i>
+            <div>Manage Tutors</div>
+        </a>
+
+        <a asp-page="/Admin/TutorProfiles/Index" class="admin-tile bg-success text-white">
+            <i class="fa fa-id-card fa-2x mb-2"></i>
+            <div>Tutor Profiles</div>
+        </a>
+
+        <a asp-page="/Admin/Learners/Index" class="admin-tile bg-secondary text-white">
+            <i class="fa fa-user-graduate fa-2x mb-2"></i>
+            <div>Manage Learners</div>
+        </a>
+
+        <a asp-page="/Admin/Connections/Index" class="admin-tile bg-warning text-dark">
+            <i class="fa fa-link fa-2x mb-2"></i>
+            <div>Connections</div>
+        </a>
+
+        <a asp-page="/Admin/Transactions/Index" class="admin-tile bg-danger text-white">
+            <i class="fa fa-credit-card fa-2x mb-2"></i>
+            <div>Transactions</div>
+        </a>
+    </div>
+</div>

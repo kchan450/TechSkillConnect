@@ -1,0 +1,39 @@
+﻿@page "{id:int}"
+@model TechSkillConnect.Pages.Learnerpage.ConnectModel
+@{
+    ViewData["Title"] = "Connect Tutor";
+}
+
+<h1>Connect Tutor</h1>
+
+<h3>Are you sure you want to connect this tutor?</h3>
+<div>
+    <h4>Tutor Details</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Tutor.Tutor_firstname)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.Tutor.Tutor_firstname)</dd>
+
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Tutor.Tutor_lastname)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.Tutor.Tutor_lastname)</dd>
+
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.TutorProfile.Language)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.TutorProfile.Language)</dd>
+
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.TutorProfile.SkillLevel)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.TutorProfile.SkillLevel)</dd>
+
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.TutorProfile.YearsOfExperience)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.TutorProfile.YearsOfExperience)</dd>
+
+        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.TutorProfile.FeePerSession)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.TutorProfile.FeePerSession)</dd>
+
+    </dl>
+
+    <form method="post">
+        <input type="hidden" asp-for="Tutor.TutorID" />
+        <input type="submit" value="Connect" class="btn btn-danger" /> |
+        <a asp-page="./FindMyTutor">Back to List</a>
+    </form>
+</div>

@@ -1,0 +1,23 @@
+﻿@page
+@model TechSkillConnect.Pages.Tutorpage.TutorCreatingProfileFirstPaymentResultModel
+
+@{
+    ViewData["Title"] = "Payment Confirmation";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Payment Confirmation</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Payment Successful</h1>
+        <p>Thank you for completing your payment. Your profile and transaction have been successfully processed. You can now proceed to your dashboard.</p>
+
+        <a href="@Url.Page("/Tutorpage/TutorProfileSuccess")" class="btn btn-primary">Go to Dashboard</a>
+    </div>
+</body>
+</html>

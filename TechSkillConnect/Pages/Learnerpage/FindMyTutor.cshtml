@@ -1,0 +1,138 @@
+﻿@page
+@model TechSkillConnect.Pages.Learnerpage.FindMyTutorModel
+
+@{
+	ViewData["Title"] = "Find My Tutor";
+}
+
+<h1 class="mb-4 text-primary fw-bold">Find My Tutor</h1>
+
+<!-- Search Form -->
+<form method="get" class="mb-4">
+	<div class="form-group mb-3">
+		<label for="searchInput">Search Tutor:</label>
+		<input asp-for="SearchString" class="form-control" placeholder="Enter First or Last Name" />
+	</div>
+	<div class="form-group">
+		<label>Filter by Country:</label>
+		<select asp-for="SelectedCountry" asp-items="Model.CountryOptions" class="form-control">
+			<option value="">All</option>
+		</select>
+	</div>
+	<div class="form-group">
+		<label></label>
+	</div>
+	<button type="submit" class="btn btn-primary">Search</button>
+</form>
+
+@if (Model.Tutors != null && Model.Tutors.Any())
+{
+	<!-- Tutor Table -->
+	<div class="table-responsive">
+		<table class="table table-bordered table-striped">
+			<thead class="table-light">
+				<tr>
+					<th>
+						<a asp-page="./FindMyTutor"
+						   asp-route-sortOrder="@Model.FirstnameSort"
+						   asp-route-currentFilter="@Model.CurrentFilter">
+							@Html.DisplayNameFor(model => model.Tutors[0].Tutor_firstname)
+						</a>
+					</th>
+					<th>
+						<a asp-page="./FindMyTutor"
+						   asp-route-sortOrder="@Model.LastnameSort"
+						   asp-route-currentFilter="@Model.CurrentFilter">
+							@Html.DisplayNameFor(model => model.Tutors[0].Tutor_lastname)
+						</a>
+					</th>
+					<th>
+						<a asp-page="./FindMyTutor"
+						   asp-route-sortOrder="@Model.LanguageSort"
+						   asp-route-currentFilter="@Model.CurrentFilter">
+							Language
+						</a>
+					</th>
+
+					<th>
+						<a asp-page="./FindMyTutor"
+						   asp-route-sortOrder="@Model.SkillLevelSort"
+						   asp-route-currentFilter="@Model.CurrentFilter">
+							Skill
+						</a>
+					</th>
+					<th>
+						<a asp-page="./FindMyTutor"
+						   asp-route-sortOrder="@Model.ExperienceSort"
+						   asp-route-currentFilter="@Model.CurrentFilter">
+							Years of Experience
+						</a>
+					</th>
+					<th>
+						<a asp-page="./FindMyTutor"
+						   asp-route-sortOrder="@Model.FeeSort"
+						   asp-route-currentFilter="@Model.CurrentFilter">
+							Fee per Session
+						</a>
+					</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+
+			<tbody>
+				@foreach (var item in Model.Tutors)
+				{
+					<tr>
+						<td>@item.Tutor_firstname</td>
+						<td>@item.Tutor_lastname</td>
+						<td>@item.TutorProfile?.Language</td>
+						<td>@item.TutorProfile?.SkillLevel</td>
+						<td>@item.TutorProfile?.YearsOfExperience</td>
+						<td>$@item.TutorProfile?.FeePerSession</td>
+						<td>
+							<div class="btn-group btn-group-sm" role="group">
+								<a asp-page="./Like" asp-route-id="@item.TutorProfile.TutorID" class="btn btn-outline-warning">Like</a>
+								<a asp-page="./Connect" asp-route-id="@item.TutorProfile.TutorID" class="btn btn-success">Connect</a>
+							</div>
+						</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	</div>
+}
+
+<!-- Pagination -->
+@if (Model.Tutors != null && Model.Tutors.Any())
+{
+	var prevDisabled = !Model.Tutors.HasPreviousPage ? "disabled" : "";
+	var nextDisabled = !Model.Tutors.HasNextPage ? "disabled" : "";
+
+	<nav aria-label="Page navigation">
+		<ul class="pagination justify-content-center mt-4">
+			<li class="page-item @prevDisabled">
+				<a class="page-link" asp-page="./FindMyTutor"
+				   asp-route-sortOrder="@Model.CurrentSort"
+				   asp-route-pageIndex="@(Model.Tutors.PageIndex - 1)"
+				   asp-route-currentFilter="@Model.CurrentFilter"
+				   aria-label="Previous">
+					<span aria-hidden="true">&laquo;</span>
+				</a>
+			</li>
+
+			<li class="page-item disabled">
+				<span class="page-link">Page @Model.Tutors.PageIndex</span>
+			</li>
+
+			<li class="page-item @nextDisabled">
+				<a class="page-link" asp-page="./FindMyTutor"
+				   asp-route-sortOrder="@Model.CurrentSort"
+				   asp-route-pageIndex="@(Model.Tutors.PageIndex + 1)"
+				   asp-route-currentFilter="@Model.CurrentFilter"
+				   aria-label="Next">
+					<span aria-hidden="true">&raquo;</span>
+				</a>
+			</li>
+		</ul>
+	</nav>
+}

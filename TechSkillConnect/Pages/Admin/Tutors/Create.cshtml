@@ -1,0 +1,75 @@
+﻿@page
+@model TechSkillConnect.Pages.Admin.Tutors.CreateModel
+
+@* //sherry *@
+@using System.Security.Claims;
+
+@{
+    ViewData["Title"] = "Create Tutor";
+    string userID = User.FindFirstValue(ClaimTypes.NameIdentifier); //sherry
+}
+
+<h1>Create New Tutor</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Tutor.IdentityID" value=@userID>
+       @*      <div class="form-group">
+                <label asp-for="Tutor.Tutor_username" class="control-label"></label>
+                <input asp-for="Tutor.Tutor_username" class="form-control" required />
+                <span asp-validation-for="Tutor.Tutor_username" class="text-danger"></span>
+            </div> *@
+
+            <div class="form-group">
+                <label asp-for="Tutor.Tutor_firstname" class="control-label"></label>
+                <input asp-for="Tutor.Tutor_firstname" class="form-control" required />
+                <span asp-validation-for="Tutor.Tutor_firstname" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Tutor.Tutor_lastname" class="control-label"></label>
+                <input asp-for="Tutor.Tutor_lastname" class="form-control" required />
+                <span asp-validation-for="Tutor.Tutor_lastname" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Tutor.TutorEmail" class="control-label"></label>
+                <input asp-for="Tutor.TutorEmail" class="form-control" type="email" required />
+                <span asp-validation-for="Tutor.TutorEmail" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Tutor.Tutor_phone" class="control-label"></label>
+                <input asp-for="Tutor.Tutor_phone" class="form-control" required />
+                <span asp-validation-for="Tutor.Tutor_phone" class="text-danger"></span>
+            </div>
+
+@*             <div class="form-group">
+                <label asp-for="Tutor.TutorPassword" class="control-label"></label>
+                <input asp-for="Tutor.TutorPassword" class="form-control" type="password" required />
+                <span asp-validation-for="Tutor.TutorPassword" class="text-danger"></span>
+            </div> *@
+
+            <div class="form-group">
+                <label asp-for="Tutor.CountryOfBirth" class="control-label"></label>
+                <input asp-for="Tutor.CountryOfBirth" class="form-control" required />
+                <span asp-validation-for="Tutor.CountryOfBirth" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Create</button>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,62 @@
+﻿@page
+@model TechSkillConnect.Pages.Learnerpage.MyConnectionModel
+@{
+    ViewData["Title"] = "My Connections";
+}
+
+<h2 class="mb-4 fw-bold text-primary">My Connections</h2>
+
+@if (Model.Connections.Count == 0)
+{
+    <div class="alert alert-info">You haven't connected with any tutors yet.</div>
+}
+else
+{
+    foreach (var connection in Model.Connections)
+    {
+        var tutor = connection.Tutor;
+        var profile = tutor.TutorProfile;
+
+        <div class="card mb-3 shadow-sm">
+            <div class="card-body d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">
+                    <div class="display-4 me-3">👩‍🏫</div> <!-- 👩‍🏫 or 👨‍🏫 Emoji as icon -->
+                    <div>
+                        <h5 class="mb-1 fw-bold">@tutor.Tutor_firstname @tutor.Tutor_lastname</h5>
+                    
+                        <dl class="row">
+                            <dt class="col-sm-2">@Html.DisplayNameFor(model => @tutor.Tutor_firstname)</dt>
+                            <dd class="col-sm-10">@Html.DisplayFor(model => @tutor.Tutor_firstname)</dd>
+
+                            <dt class="col-sm-2">@Html.DisplayNameFor(model => @tutor.Tutor_lastname)</dt>
+                            <dd class="col-sm-10">@Html.DisplayFor(model => @tutor.Tutor_lastname)</dd>
+
+                            <dt class="col-sm-2">@Html.DisplayNameFor(model => @tutor.TutorEmail)</dt>
+                            <dd class="col-sm-10">@Html.DisplayFor(model => @tutor.TutorEmail)</dd>
+
+                            <dt class="col-sm-2">@Html.DisplayNameFor(model => @profile.Language)</dt>
+                            <dd class="col-sm-10">@Html.DisplayFor(model => @profile.Language)</dd>
+
+                            <dt class="col-sm-2">@Html.DisplayNameFor(model => @profile.SkillLevel)</dt>
+                            <dd class="col-sm-10">@Html.DisplayFor(model => @profile.SkillLevel)</dd>
+
+                            <dt class="col-sm-2">@Html.DisplayNameFor(model => @profile.YearsOfExperience)</dt>
+                            <dd class="col-sm-10">@Html.DisplayFor(model => @profile.YearsOfExperience)</dd>
+
+                            <dt class="col-sm-2">@Html.DisplayNameFor(model => @profile.FeePerSession)</dt>
+                            <dd class="col-sm-10">@Html.DisplayFor(model => @profile.FeePerSession)</dd>
+
+                        </dl>
+                    </div>
+                </div>
+                <div class="btn-group">
+                    <a asp-page="./Disconnect" asp-route-id="@connection.ConnectionID" class="btn btn-outline-primary">Disconnect</a>
+                    <button class="btn btn-outline-danger">
+                        <i class="fa fa-heart text-danger"></i>
+                    </button>
+                    <a href="/Inbox/ChatWithTutor?tutorId=@tutor.TutorID" class="btn btn-outline-primary">Inbox</a>
+                </div>
+            </div>
+        </div>
+    }
+}

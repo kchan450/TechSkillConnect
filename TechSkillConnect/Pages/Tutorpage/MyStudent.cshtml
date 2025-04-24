@@ -1,0 +1,43 @@
+﻿@page
+@model TechSkillConnect.Pages.Tutorpage.MyStudentModel
+@{
+    ViewData["Title"] = "My Students";
+}
+
+<div class="container mt-5">
+    <div class="d-flex justify-content-between mb-4">
+        <div>
+            <h2 class="fw-bold">My Students</h2>
+        </div>
+        <div>
+            <a href="/Tutorpage/tutor_dashboard" class="btn btn-outline-dark me-2">Tutor Mainpage</a>
+            <a href="/Tutorpage/Inbox" class="btn btn-outline-dark me-2">Inbox (3)</a>
+            <a href="/Identity/Account/Logout" class="btn btn-outline-dark">Logout</a>
+        </div>
+    </div>
+
+    <div class="bg-white p-4 rounded shadow-sm">
+        @if (!Model.Connections.Any())
+        {
+            <p>No students connected yet.</p>
+        }
+        else
+        {
+            foreach (var conn in Model.Connections)
+            {
+                var learner = conn.Learner;
+
+                <div class="d-flex justify-content-between align-items-center py-3 border-bottom">
+                    <div>
+                        <strong>@learner.Learner_firstname @learner.Learner_lastname</strong>
+                        <span class="text-muted ms-2">(Learner ID: @learner.LearnerID)</span>
+                        <strong>Email: @learner.LearnerEmail</strong>
+                    </div>
+                    <div>
+                        <a href="/Tutorpage/Message?learnerId=@learner.LearnerID" class="btn btn-outline-primary rounded-pill px-4">Message</a>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>

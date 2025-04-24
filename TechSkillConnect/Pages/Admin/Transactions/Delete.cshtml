@@ -1,0 +1,42 @@
+﻿@page "{id:int}"
+@model TechSkillConnect.Pages.Admin.Transactions.DeleteModel
+
+@{
+    ViewData["Title"] = "Delete Subscription Transaction";
+}
+
+<h1>Delete Subscription Transaction</h1>
+
+<h3 class="text-danger">Are you sure you want to delete this subscription transaction?</h3>
+<div>
+    <h4>Transaction Details</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Transaction.Payment_timestamp)</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(model => model.Transaction.Payment_timestamp)</dd>
+
+        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Transaction.Sub_start_date)</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(model => model.Transaction.Sub_start_date)</dd>
+
+        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Transaction.Sub_end_date)</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(model => model.Transaction.Sub_end_date)</dd>
+
+        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Transaction.Sub_status)</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(model => model.Transaction.Sub_status)</dd>
+
+        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Transaction.Sub_Fee)</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(model => model.Transaction.Sub_Fee)</dd>
+
+        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Transaction.PaymentID)</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(model => model.Transaction.PaymentID)</dd>
+
+        <dt class="col-sm-3">Tutor Email</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(model => model.Transaction.Tutor.TutorEmail)</dd>
+    </dl>
+
+    <form method="post">
+        <input type="hidden" asp-for="Transaction.TransactionID" />
+        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <a asp-page="./Index" class="btn btn-secondary">Back to List</a>
+    </form>
+</div>

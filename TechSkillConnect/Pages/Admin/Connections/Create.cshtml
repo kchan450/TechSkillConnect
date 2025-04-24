@@ -1,0 +1,100 @@
+﻿@* @page
+@model TechSkillConnect.Pages.Admin.Connections.CreateModel
+
+@{
+    ViewData["Title"] = "Create Connection";
+}
+
+<h1>Create Connection</h1>
+
+<h4>Connection Details</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="Connection.TutorID" class="control-label"></label>
+                <select asp-for="Connection.TutorID" class="form-control" asp-items="ViewBag.TutorID"></select>
+                <span asp-validation-for="Connection.TutorID" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Connection.LearnerID" class="control-label"></label>
+                <select asp-for="Connection.LearnerID" class="form-control" asp-items="ViewBag.LearnerID"></select>
+                <span asp-validation-for="Connection.LearnerID" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Connection.ConnectionDate" class="control-label"></label>
+                <input asp-for="Connection.ConnectionDate" class="form-control" readonly />
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+ *@
+
+
+                @page
+@model TechSkillConnect.Pages.Admin.Connections.CreateModel
+
+@{
+    ViewData["Title"] = "Create Connection";
+}
+
+<h1>Create Connection</h1>
+
+<h4>Connection Details</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="ConnectionVM.TutorID" class="control-label"></label>
+                <select asp-for="ConnectionVM.TutorID" class="form-control" asp-items="Model.ConnectionVM.TutorList"></select>
+                <span asp-validation-for="ConnectionVM.TutorID" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="ConnectionVM.LearnerID" class="control-label"></label>
+                <select asp-for="ConnectionVM.LearnerID" class="form-control" asp-items="Model.ConnectionVM.LearnerList"></select>
+                <span asp-validation-for="ConnectionVM.LearnerID" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="ConnectionVM.ConnectionDate" class="control-label"></label>
+                <input asp-for="ConnectionVM.ConnectionDate" class="form-control" readonly />
+                <input type="hidden" asp-for="ConnectionVM.ConnectionDate" />
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

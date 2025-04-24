@@ -1,0 +1,178 @@
+﻿@* @page
+@model IndexModel
+@{
+    ViewData["Title"] = "Profile";
+    ViewData["ActivePage"] = ManageNavPages.Index;
+}
+
+<h3>@ViewData["Title"]</h3>
+<partial name="_StatusMessage" for="StatusMessage" />
+<div class="row">
+    <div class="col-md-6">
+        <form id="profile-form" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+            <div class="form-floating mb-3">
+                <input asp-for="Username" class="form-control" placeholder="Please choose your username." disabled />
+                <label asp-for="Username" class="form-label"></label>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.PhoneNumber" class="form-control" placeholder="Please enter your phone number."/>
+                <label asp-for="Input.PhoneNumber" class="form-label"></label>
+                <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+            </div>
+            <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+ *@
+
+
+                @page
+@model TechSkillConnect.Pages.Tutorpage.TutorProfileModel
+
+@{
+    ViewData["Title"] = "Tutor Profile";
+    ViewData["ActivePage"] = ManageNavPages.TutorProfile;
+}
+
+<h3>@ViewData["Title"]</h3>
+
+<div class="container">
+    <form method="post">
+        <div asp-validation-summary="All" class="text-danger" role="alert"></div>
+
+        <!-- Tutor ID (Hidden) -->
+        <input type="hidden" asp-for="Tutor.TutorID" />
+
+        <!-- First Name -->
+        <div class="form-floating mb-3">
+            <input asp-for="Tutor.Tutor_firstname" class="form-control" placeholder="First Name" required />
+            <label asp-for="Tutor.Tutor_firstname" class="form-label">First Name</label>
+            <span asp-validation-for="Tutor.Tutor_firstname" class="text-danger"></span>
+        </div>
+
+        <!-- Last Name -->
+        <div class="form-floating mb-3">
+            <input asp-for="Tutor.Tutor_lastname" class="form-control" placeholder="Last Name" required />
+            <label asp-for="Tutor.Tutor_lastname" class="form-label">Last Name</label>
+            <span asp-validation-for="Tutor.Tutor_lastname" class="text-danger"></span>
+        </div>
+
+     @*    <!-- Country of Birth -->
+        <div class="form-floating mb-3">
+            <input asp-for="Tutor.CountryOfBirth" class="form-control" placeholder="Country of Birth" required />
+            <label asp-for="Tutor.CountryOfBirth" class="form-label">Country of Birth</label>
+            <span asp-validation-for="Tutor.CountryOfBirth" class="text-danger"></span>
+        </div>
+
+    *@
+        <!-- Country of Birth Dropdown -->
+        <div class="form-floating mb-3">
+            <select asp-for="Tutor.CountryOfBirth" class="form-control" required>
+                <option value="">Select your country</option>
+                <option value="USA">United States</option>
+                <option value="Canada">Canada</option>
+                <option value="UK">United Kingdom</option>
+                <option value="Australia">Australia</option>
+                <option value="India">India</option>
+                <option value="China">China</option>
+                <option value="Germany">Germany</option>
+                <!-- Add more countries as needed -->
+            </select>
+            <span asp-validation-for="Tutor.CountryOfBirth" class="text-danger"></span>
+        </div>
+
+
+        <!-- Phone Number -->
+        <div class="form-floating mb-3">
+            <input asp-for="Tutor.Tutor_phone" class="form-control" placeholder="Phone Number" required />
+            <label asp-for="Tutor.Tutor_phone" class="form-label">Phone Number</label>
+            <span asp-validation-for="Tutor.Tutor_phone" class="text-danger"></span>
+        </div>
+
+        <!-- Email -->
+        <div class="form-floating mb-3">
+            <input asp-for="Tutor.TutorEmail" class="form-control" placeholder="Email Address" required />
+            <label asp-for="Tutor.TutorEmail" class="form-label">Email</label>
+            <span asp-validation-for="Tutor.TutorEmail" class="text-danger"></span>
+        </div>
+
+        <!-- Skills you teach -->
+        <div class="form-floating mb-3">
+            <select asp-for="TutorProfile.Language" class="form-control" required>
+                <!option value="AI" @(Model.TutorProfile.Language == "AI" ? "selected" : "")>AI</!option>
+                <!option value="Python" @(Model.TutorProfile.Language == "Python" ? "selected" : "")>Python</!option>
+                <!option value="Cloud Computing" @(Model.TutorProfile.Language == "Cloud Computing" ? "selected" : "")>Cloud Computing</!option>
+                <!option value="Machine Learning" @(Model.TutorProfile.Language == "Machine Learning" ? "selected" : "")>Machine Learning</!option>
+            </select>
+            <label asp-for="TutorProfile.Language" class="form-label">Skills you teach</label>
+            <span asp-validation-for="TutorProfile.Language" class="text-danger"></span>
+        </div>
+
+        <!-- Years of Experience -->
+        <div class="form-floating mb-3">
+            <select asp-for="TutorProfile.YearsOfExperience" class="form-control" required>
+                <option value="0-1">0-1 years</option>
+                <option value="2-3">2-3 years</option>
+                <option value="4-5">4-5 years</option>
+                <option value="6-10">6-10 years</option>
+                <option value="10-20">10+ years</option>
+            </select>
+            <label asp-for="TutorProfile.YearsOfExperience" class="form-label">Years of Experience</label>
+            <span asp-validation-for="TutorProfile.YearsOfExperience" class="text-danger"></span>
+        </div>
+
+        <!-- Skill Level -->
+        <div class="form-floating mb-3">
+            <select asp-for="TutorProfile.SkillLevel" class="form-control" required>
+                <!option value="Beginner" @(Model.TutorProfile.SkillLevel == "Beginner" ? "selected" : "")>Beginner</!option>
+                <!option value="Intermediate" @(Model.TutorProfile.SkillLevel == "Intermediate" ? "selected" : "")>Intermediate</!option>
+                <!option value="Advanced" @(Model.TutorProfile.SkillLevel == "Advanced" ? "selected" : "")>Advanced</!option>
+                <!option value="All Levels" @(Model.TutorProfile.SkillLevel == "All Levels" ? "selected" : "")>All Levels</!option>
+            </select>
+            <label asp-for="TutorProfile.SkillLevel" class="form-label">Skill Level</label>
+            <span asp-validation-for="TutorProfile.SkillLevel" class="text-danger"></span>
+        </div>
+
+       <!-- Fee Per Session -->
+        <div class="form-floating mb-3">
+            <select asp-for="TutorProfile.FeePerSession" class="form-control" required>
+                <!option value="10" @(Model.TutorProfile.FeePerSession == 10 ? "selected" : "")>10 CAD</!option>
+                <!option value="20" @(Model.TutorProfile.FeePerSession == 20 ? "selected" : "")>20 CAD</!option>
+                <!option value="30" @(Model.TutorProfile.FeePerSession == 30 ? "selected" : "")>30 CAD</!option>
+                <!option value="40" @(Model.TutorProfile.FeePerSession == 40 ? "selected" : "")>40 CAD</!option>
+                <!option value="50" @(Model.TutorProfile.FeePerSession == 50 ? "selected" : "")>50 CAD</!option>
+                <!option value="60" @(Model.TutorProfile.FeePerSession == 60 ? "selected" : "")>60 CAD</!option>
+                <!option value="70" @(Model.TutorProfile.FeePerSession == 70 ? "selected" : "")>70 CAD</!option>
+                <!option value="80" @(Model.TutorProfile.FeePerSession == 80 ? "selected" : "")>80 CAD</!option>
+                <!option value="90" @(Model.TutorProfile.FeePerSession == 90 ? "selected" : "")>90 CAD</!option>
+                <!option value="100" @(Model.TutorProfile.FeePerSession == 100 ? "selected" : "")>100 CAD</!option>
+            </select>
+            <label asp-for="TutorProfile.FeePerSession" class="form-label">Fee Per Session (CAD)</label>
+            <span asp-validation-for="TutorProfile.FeePerSession" class="text-danger"></span>
+        </div>
+
+        <!-- Self Introduction -->
+        <div class="form-floating mb-3">
+            <textarea asp-for="TutorProfile.SelfIntro" class="form-control" rows="4" placeholder="Self Introduction" required></textarea>
+            <label asp-for="TutorProfile.SelfIntro" class="form-label">Self Introduction</label>
+            <span asp-validation-for="TutorProfile.SelfIntro" class="text-danger"></span>
+        </div>
+
+        <!-- Self Headline -->
+        <div class="form-floating mb-3">
+            <input asp-for="TutorProfile.SelfHeadline" class="form-control" placeholder="Self Headline" required />
+            <label asp-for="TutorProfile.SelfHeadline" class="form-label">Self Headline</label>
+            <span asp-validation-for="TutorProfile.SelfHeadline" class="text-danger"></span>
+        </div>
+
+        <!-- Save Button -->
+        <div class="form-floating mb-3">
+            <button type="submit" class="btn btn-primary w-100">Save</button>
+        </div>
+    </form>
+</div>

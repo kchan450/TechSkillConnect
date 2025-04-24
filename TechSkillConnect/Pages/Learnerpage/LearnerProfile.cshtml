@@ -1,0 +1,47 @@
+﻿@* @page
+@model TechSkillConnect.Pages.Learnerpage.LearnerProfileModel
+
+@{
+    ViewData["Title"] = "Learner Profile";
+}
+
+<h3>@ViewData["Title"]</h3>
+
+<div class="container">
+    <form method="post">
+        <div class="form-group">
+            <label asp-for="Learner.Learner_firstname" class="control-label">First Name</label>
+            <input asp-for="Learner.Learner_firstname" class="form-control" disabled />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Learner.Learner_lastname" class="control-label">Last Name</label>
+            <input asp-for="Learner.Learner_lastname" class="form-control" disabled />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="LearnerProfile.Language" class="control-label">Language</label>
+            <input asp-for="LearnerProfile.Language" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="LearnerProfile.YearsOfStudy" class="control-label">Years of Study</label>
+            <input asp-for="LearnerProfile.YearsOfStudy" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="LearnerProfile.StudyArea" class="control-label">Study Area</label>
+            <input asp-for="LearnerProfile.StudyArea" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="LearnerProfile.Goals" class="control-label">Goals</label>
+            <textarea asp-for="LearnerProfile.Goals" class="form-control" rows="4"></textarea>
+        </div>
+
+        <div class="form-group mt-3">
+            <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+    </form>
+</div>
+ *@

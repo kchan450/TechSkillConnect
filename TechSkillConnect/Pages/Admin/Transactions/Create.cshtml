@@ -1,0 +1,75 @@
+﻿@page
+@model TechSkillConnect.Pages.Admin.Transactions.CreateModel
+
+@* //sherry *@
+@using System.Security.Claims;
+
+@{
+    ViewData["Title"] = "Create Subscription Transaction";
+    string userID = User.FindFirstValue(ClaimTypes.NameIdentifier); //sherry
+
+}
+
+<h1>Create Subscription Transaction</h1>
+
+<h4>Transaction Details</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Transaction.IdentityID" value=@userID>
+            <div class="form-group">
+                <label asp-for="Transaction.TutorID" class="control-label"></label>
+                <select asp-for="Transaction.TutorID" class="form-control" asp-items="ViewBag.TutorID"></select>
+                <span asp-validation-for="Transaction.TutorID" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Transaction.PaymentID" class="control-label"></label>
+                <select asp-for="Transaction.PaymentID" class="form-control" asp-items="ViewBag.PaymentID"></select>
+                <span asp-validation-for="Transaction.PaymentID" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Transaction.Sub_Fee" class="control-label"></label>
+                <input asp-for="Transaction.Sub_Fee" class="form-control" readonly />
+                <span asp-validation-for="Transaction.Sub_Fee" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Transaction.Payment_timestamp" class="control-label"></label>
+                <input asp-for="Transaction.Payment_timestamp" class="form-control" readonly />
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Transaction.Sub_start_date" class="control-label"></label>
+                <input asp-for="Transaction.Sub_start_date" class="form-control" readonly />
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Transaction.Sub_end_date" class="control-label"></label>
+                <input asp-for="Transaction.Sub_end_date" class="form-control" readonly />
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Transaction.Sub_status" class="control-label"></label>
+                <input asp-for="Transaction.Sub_status" class="form-control" readonly />
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index" class="btn btn-secondary">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

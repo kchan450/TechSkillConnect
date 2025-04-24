@@ -1,0 +1,140 @@
+﻿@* @page *@
+@* @model IndexModel *@
+@* @{ *@
+@*     ViewData["Title"] = "Homepage"; *@
+@* } *@
+
+@* <!DOCTYPE html> *@
+@* <html lang="en"> *@
+@* <!-- Header --> *@
+
+@* <body> *@
+
+@*     <!-- Navigation Bar --> *@
+@*     <div class="navbar"> *@
+@*         <button onclick="location.href='/Tutorpage/tutor_sign_up_page'">Become a Tutor</button> *@
+@*         <button onclick="location.href='/Tutorpage/tutor_mainpage_login'">Tutor Login</button> *@
+@*         <button onclick="location.href='/Learnerpage/learner_sign_up_page'">Learner Sign Up</button> *@
+@*         <button onclick="location.href='/Learnerpage/learner_mainpage_login'">Learner Log In</button> *@
+@*     </div> *@
+
+@*     <!-- Main Content Section --> *@
+@*     <div class="content-section"> *@
+@*         <h1>Welcome to TechSkill Connect</h1> *@
+@*         <p> *@
+@* 			Learn the most in-demand tech skills from industry experts! <strong>TechSkill Connect</strong> connects learners with top-tier tutors in Cloud Computing, AI, Machine Learning, Cybersecurity, and more, empowering you to stay ahead in today’s fast-evolving digital world. *@
+@*         </p> *@
+
+@*         <div class="highlights"> *@
+@*             <div class="highlight"> *@
+@*                 <h3>Connect with Tech Experts</h3> *@
+@*                 <p>Learn directly from experienced tech professionals who bring real-world insights and hands-on expertise to accelerate your learning journey.</p> *@
+@*             </div> *@
+@*             <div class="highlight"> *@
+@*                 <h3>Smart & Personalized Learning</h3> *@
+@*                 <p>Our advanced matching system pairs you with the best tutor based on your skills, goals, and interests—ensuring an engaging, customized learning experience.</p> *@
+@*             </div> *@
+@*             <div class="highlight"> *@
+@*                 <h3>Scalable & Future-Proof</h3> *@
+@*                 <p>Our platform grows with you—whether you're just starting or looking to upskill, we provide the right learning path to keep you competitive in a fast-changing tech industry.</p> *@
+@*             </div> *@
+@*             <div class="highlight"> *@
+@*                 <h3>Smart Tutor Matching</h3> *@
+@*                 <p>Using advanced matching, we connect you with tutors who align with your learning needs and goals.</p> *@
+@*             </div> *@
+@*         </div> *@
+@*     </div> *@
+
+@*     <!-- Contact Section --> *@
+@*     <div class="contact-section" id="contact"> *@
+@*         <h2>Contact Us</h2> *@
+@*         <div class="contact-info"> *@
+@*             <p><strong>Email:</strong> support@techskillconnect.com</p> *@
+@*             <p><strong>Phone:</strong> +1 (234) 567-8901</p> *@
+@*             <p><strong>Address:</strong> 123 Learning St, Education City, EC 12345</p> *@
+@*         </div> *@
+@*     </div> *@
+
+@*     <!-- Footer --> *@
+@*     <footer> *@
+@*         &copy; 2024 Learning Connect | <a href="#contact">Contact Us</a> *@
+@*     </footer> *@
+
+@* </body> *@
+@* </html> *@
+
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Homepage";
+}
+
+@* <!-- Secondary navbar for homepage actions --> *@
+@* <nav class="navbar navbar-expand-sm navbar-dark bg-primary"> *@
+@*     <div class="container-fluid justify-content-end"> *@
+@*         <ul class="navbar-nav"> *@
+@*             <li class="nav-item"> *@
+@*                 <a class="nav-link text-white" href="/Tutorpage/tutor_sign_up_page">Become a Tutor</a> *@
+@*             </li> *@
+@*             <li class="nav-item"> *@
+@*                 <a class="nav-link text-white" href="/Tutorpage/tutor_mainpage_login">Tutor Login</a> *@
+@*             </li> *@
+@*             <li class="nav-item"> *@
+@*                 <a class="nav-link text-white" href="/Learnerpage/learner_sign_up_page">Learner Sign Up</a> *@
+@*             </li> *@
+@*             <li class="nav-item"> *@
+@*                 <a class="nav-link text-white" href="/Learnerpage/learner_mainpage_login">Learner Log In</a> *@
+@*             </li> *@
+@*         </ul> *@
+@*     </div> *@
+@* </nav> *@
+
+<div class="container mt-5">
+    <div class="text-center">
+
+
+
+          <h1>Welcome to TechSkill Connect</h1> 
+        <p> 
+			Learn the most in-demand tech skills from industry experts! <strong>TechSkill Connect</strong> connects learners with top-tier tutors in Cloud Computing, AI, Machine Learning, Cybersecurity, and more, empowering you to stay ahead in today’s fast-evolving digital world. 
+         </p>
+
+        <div class="highlights row text-center mt-5">
+            <div class="highlight"> 
+                 <h3>Connect with Tech Experts</h3> 
+                 <p>Learn directly from experienced tech professionals who bring real-world insights and hands-on expertise to accelerate your learning journey.</p> 
+             </div> 
+             <div class="highlight"> 
+                 <h3>Smart & Personalized Learning</h3> 
+              <p>Our advanced matching system pairs you with the best tutor based on your skills, goals, and interests—ensuring an engaging, customized learning experience.</p> 
+             </div> 
+             <div class="highlight"> 
+                 <h3>Scalable & Future-Proof</h3> 
+                 <p>Our platform grows with you—whether you're just starting or looking to upskill, we provide the right learning path to keep you competitive in a fast-changing tech industry.</p>
+             </div> 
+             <div class="highlight"> 
+                 <h3>Smart Tutor Matching</h3>
+                <p>Using advanced matching, we connect you with tutors who align with your learning needs and goals.</p>
+             </div>
+         </div>
+
+
+
+
+
+
+    </div>
+
+   
+    <div class="mt-5 pt-5" id="contact">
+        <h2 class="text-primary fw-bold mb-3">Contact Us</h2>
+        <p><strong>Email:</strong> support@techskillconnect.com</p>
+        <p><strong>Phone:</strong> +1 (234) 567-8901</p>
+        <p><strong>Address:</strong> 123 Learning St, Education City, EC 12345</p>
+    </div>
+</div>
+
+<footer class="text-center text-white bg-dark mt-5 py-3">
+    &copy; 2024 TechSkill Connect |
+    <a href="#contact" class="text-white text-decoration-underline">Contact Us</a>
+</footer>

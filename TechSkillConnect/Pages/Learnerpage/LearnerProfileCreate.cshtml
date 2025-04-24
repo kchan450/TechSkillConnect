@@ -1,0 +1,45 @@
+﻿@page
+@model TechSkillConnect.Pages.LearnerPage.LearnerProfileCreateModel
+
+@{
+    ViewData["Title"] = "Create Learner Profile";
+}
+
+<div class="container py-5">
+    <h2>Create Your Profile</h2>
+
+    <form asp-action="OnPostAsync" method="post">
+
+        <div class="field-group">
+            <label for="firstName">First Name</label>
+            <input type="text" id="firstName" asp-for="LearnerProfile.Learner_firstname" class="uniform-input" placeholder="Enter your first name">
+            <span asp-validation-for="LearnerProfile.Learner_firstname" class="text-danger"></span>
+        </div>
+
+        <!-- Last Name -->
+        <div class="field-group">
+            <label for="lastName">Last Name</label>
+            <input type="text" id="lastName" asp-for="LearnerProfile.Learner_lastname" class="uniform-input" placeholder="Enter your last name">
+            <span asp-validation-for="LearnerProfile.Learner_lastname" class="text-danger"></span>
+        </div>
+
+        <!-- Country of Birth Dropdown -->
+        <div class="field-group">
+            <label for="countryOfBirth">Country of Birth</label>
+            <select id="countryOfBirth" asp-for="LearnerProfile.CountryOfBirth" class="form-control" required>
+                <option value="">Select your country</option>
+                <option value="USA">United States</option>
+                <option value="Canada">Canada</option>
+                <option value="UK">United Kingdom</option>
+                <option value="Australia">Australia</option>
+                <option value="India">India</option>
+                <option value="China">China</option>
+                <option value="Germany">Germany</option>
+                <!-- Add more countries as needed -->
+            </select>
+            <span asp-validation-for="LearnerProfile.CountryOfBirth" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Create Profile</button>
+    </form>
+</div>

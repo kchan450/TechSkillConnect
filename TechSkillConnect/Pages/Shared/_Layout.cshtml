@@ -1,0 +1,193 @@
+﻿@* //sherry *@
+@using System.Security.Claims;
+@inject TechSkillConnect.Data.ApplicationDbContext _context
+
+@{
+    string userID = User.FindFirstValue(ClaimTypes.NameIdentifier);
+    string userRole = User.FindFirstValue(ClaimTypes.Role);
+    var tutor = _context.Tutors.FirstOrDefault(t => t.IdentityID == userID);
+    var profile = tutor != null ? _context.TutorProfiles.FirstOrDefault(p => p.TutorID == tutor.TutorID) : null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"] - Tech Skill Connect</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" />
+
+    <style>
+        /* Additional Styles for hyperlink */
+        .sort-link {
+        text-decoration: none; /* Removes underline */
+        color: inherit; /* Makes the link the same color as regular text */
+        display: inline-flex; /* Keeps text and icon on the same line */
+        align-items: center;
+        gap: 4px; /* Optional space between text and icon */
+        }
+
+        .sort-link:hover {
+        color: inherit; /* Optional: prevents color change on hover */
+        }
+
+        /* Additional Styles for Header */
+        .navbar {
+        background-color: #007bff; /* Bootstrap primary color */
+        }
+
+        .navbar-brand {
+        color: white !important; /* Text color for brand */
+        margin-right: 20px; /* Space between brand and links */
+        }
+
+        .nav-item {
+        margin: 0 10px; /* Margin for spacing between entire nav items */
+        }
+
+        .nav-link {
+        color: white !important; /* Text color for links */
+        padding: 10px 15px; /* Padding for links */
+        border-radius: 5px; /* Rounded corners */
+        transition: background-color 0.3s; /* Smooth transition for hover effect */
+        }
+
+        .nav-link:hover {
+        background-color: #0056b3; /* Darker background on hover */
+        color: #ffcc00 !important; /* Color on hover */
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-light">
+            <img src="/images/newlogo.gif" alt="Techskill connect Logo">
+            <a class="navbar-brand" asp-page="/Index">TechSkill Connect</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav">
+                    <!-- Home Link -->
+                    <li class="nav-item">
+                        <a class="nav-link" asp-page="/Index">Home</a>
+                    </li>
+                    <!-- admin -->
+                    @if (userID == "d1a93e6f-8a9b-455e-9b47-5fc12458e530") //admin user id example for account t1@t.com
+                    {
+                        <li class="nav-item dropdown hover-dropdown">
+                            <a class="nav-link dropdown-toggle text-white fw-bold" href="#" role="button" aria-expanded="false">
+                                Admin
+                            </a>
+                            <ul class="dropdown-menu p-3 shadow" style="width: 300px;">
+                                <div class="d-flex flex-wrap gap-3">
+                                    <a asp-page="/Admin/Tutors/Index" class="text-center text-decoration-none text-dark">
+                                        <div class="admin-tile bg-primary text-white">
+                                            <i class="fa fa-users fa-2x mb-2"></i><br />
+                                            <span class="small">Tutors</span>
+                                        </div>
+                                    </a>
+                                    <a asp-page="/Admin/TutorProfiles/Index" class="text-center text-decoration-none text-dark">
+                                        <div class="admin-tile bg-success text-white">
+                                            <i class="fa fa-id-card-o fa-2x mb-2"></i><br />
+                                            <span class="small">Profiles</span>
+                                        </div>
+                                    </a>
+                                    <a asp-page="/Admin/Learners/Index" class="text-center text-decoration-none text-dark">
+                                        <div class="admin-tile bg-secondary text-white">
+                                            <i class="fa fa-graduation-cap fa-2x mb-2"></i><br />
+                                            <span class="small">Learners</span>
+                                        </div>
+                                    </a>
+                                    <a asp-page="/Admin/Connections/Index" class="text-center text-decoration-none text-dark">
+                                        <div class="admin-tile bg-warning text-white">
+                                            <i class="fa fa-link fa-2x mb-2"></i><br />
+                                            <span class="small">Connections</span>
+                                        </div>
+                                    </a>
+                                    <a asp-page="/Admin/Transactions/Index" class="text-center text-decoration-none text-dark">
+                                        <div class="admin-tile bg-danger text-white">
+                                            <i class="fa fa-credit-card fa-2x mb-2"></i><br />
+                                            <span class="small">Transactions</span>
+                                        </div>
+                                    </a>
+                                </div>
+                            </ul>
+                        </li>
+                    }
+                    <!-- Learner Dropdown -->
+                    @if (userRole == "Learner") //admin user id example for account t1@t.com
+                    {
+                        <li class="nav-item dropdown hover-dropdown">
+                            <a class="nav-link dropdown-toggle text-white fw-bold" href="#" role="button" aria-expanded="false">
+                                Learner
+                            </a>
+                            <ul class="dropdown-menu p-3 shadow" style="width: 300px;">
+                                <div class="d-flex flex-wrap gap-3">
+                                    <a asp-page="/Learnerpage/learner_dashboard" class="text-center text-decoration-none text-dark">
+                                        <div class="admin-tile bg-success text-white">
+                                            <i class="fa fa-dashboard fa-2x mb-2"></i><br />
+                                            <span class="small">Dashboard</span>
+                                        </div>
+                                    </a>
+                                    <a asp-page="/Learnerpage/learner_profile" class="text-center text-decoration-none text-dark">
+                                        <div class="admin-tile bg-info text-white">
+                                            <i class="fa fa-user fa-2x mb-2"></i><br />
+                                            <span class="small">Profile</span>
+                                        </div>
+                                    </a>
+                                </div>
+                            </ul>
+                        </li>
+                    }
+                    <!-- Tutor Dropdown (if needed) -->
+                    @if (userRole == "Tutor") //admin user id example for account t1@t.com
+                    {
+                        <li class="nav-item dropdown hover-dropdown">
+                            <a class="nav-link dropdown-toggle text-white fw-bold" href="#" role="button" aria-expanded="false">
+                                Tutor
+                            </a>
+                            <ul class="dropdown-menu p-3 shadow" style="width: 300px;">
+                                <div class="d-flex flex-wrap gap-3">
+                                    <a asp-page="/Tutorpage/tutor_dashboard" class="text-center text-decoration-none text-dark">
+                                        <div class="admin-tile bg-success text-white">
+                                            <i class="fa fa-dashboard fa-2x mb-2"></i><br />
+                                            <span class="small">Dashboard</span>
+                                        </div>
+                                    </a>
+                                    <a asp-page="/Tutorpage/TutorProfile" class="text-center text-decoration-none text-dark">
+                                        <div class="admin-tile bg-info text-white">
+                                            <i class="fa fa-user fa-2x mb-2"></i><br />
+                                            <span class="small">Profile</span>
+                                        </div>
+                                    </a>
+                                </div>
+                            </ul>
+                        </li>
+                    }
+                 
+                </ul>
+                <partial name="_LoginPartial" />
+            </div>
+        </nav>
+    </header>
+
+    <div class="container-fluid px-3 px-md-5">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

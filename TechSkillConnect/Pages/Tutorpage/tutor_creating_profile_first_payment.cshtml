@@ -1,0 +1,42 @@
+@page
+@model TechSkillConnect.Pages.Tutorpage.TutorCreatingProfileFirstPaymentModel
+
+@{
+    ViewData["Title"] = "Payment";
+
+    // Example dynamic data for payment amounts
+    decimal registrationFee = 49.00M;
+    decimal subscriptionFee = 19.00M;
+    decimal totalAmount = registrationFee + subscriptionFee;
+}
+
+<!DOCTYPE html>
+<form method="post">
+    <div class="instruction-box">
+        <p></p>
+        <h3>Instructions for Payment</h3>
+        <p>Please follow the instructions below to pay the <strong>registration</strong> and <strong>subscription</strong> fees for first-time registration.</p>
+    </div>
+
+    <div class="amount-box">
+        <h3>Total Payment Amount: <strong>@totalAmount</strong></h3>
+        <p>(One-Time Registration Fee: @registrationFee + First Month Subscription Fee: @subscriptionFee)</p>
+    </div>
+
+    <div class="method-box">
+        <h3>Payment Method</h3>
+        <p>We accept payment via <a href="https://www.paypal.com" target="_blank">PayPal</a>.</p>
+    </div>
+
+    <div class="button-container">
+        <button type="button" class="btn btn-success" onclick="goBack()">Back</button>
+        <button type="submit" class="button-confirm btn btn-primary">Confirm</button> <!-- This will trigger the OnPostAsync method -->
+    </div>
+</form>
+
+<script>
+    // JavaScript Function to Go Back
+    function goBack() {
+        window.history.back();
+    }
+</script>

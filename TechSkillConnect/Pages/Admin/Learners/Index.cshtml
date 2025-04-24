@@ -1,0 +1,134 @@
+﻿@page
+@model TechSkillConnect.Pages.Admin.Learners.IndexModel
+
+@{
+    ViewData["Title"] = "Learner Index";
+}
+
+<h1>Learner Index</h1>
+
+<p>
+    <a asp-page="Create" class="btn btn-primary">Create New</a>
+</p>
+
+<!-- 🔹 Search and Filter Form -->
+<form method="get">
+    <div class="form-group">
+        <label>Search Learner:</label>
+        <input asp-for="SearchString" class="form-control" placeholder="Enter first name, last name or Email" />
+    </div>
+
+    <div class="form-group">
+        <label>Filter by Country Of Birth:</label>
+        <select asp-for="SelectedCountryOfBirth" asp-items="Model.CountryOfBirthOptions" class="form-control">
+            <option value="">All</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Apply Filters</button>
+</form>
+
+@if (Model.Learners != null && Model.Learners.Any())
+{
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <a asp-page="./Index" asp-route-sortOrder="@Model.FirstnameSort"
+                   asp-route-currentFilter="@Model.CurrentFilter" class="sort-link">
+                    <span>@Html.DisplayNameFor(model => model.Learners[0].Learner_firstname)</span>
+                    <i class="fa fa-fw fa-sort"></i>
+                </a>
+            </th>
+            <th>
+                <a asp-page="./Index" asp-route-sortOrder="@Model.LastnameSort"
+                   asp-route-currentFilter="@Model.CurrentFilter" class="sort-link">
+                    <span>@Html.DisplayNameFor(model => model.Learners[0].Learner_lastname)</span>
+                    <i class="fa fa-fw fa-sort"></i>
+                </a>
+            </th>
+            <th>
+                <a asp-page="./Index" asp-route-sortOrder="@Model.EmailSort"
+                   asp-route-currentFilter="@Model.CurrentFilter" class="sort-link">
+                    <span>@Html.DisplayNameFor(model => model.Learners[0].LearnerEmail)</span>
+                    <i class="fa fa-fw fa-sort"></i>
+                </a>
+            </th>
+            <th>
+                <a asp-page="./Index" asp-route-sortOrder="@Model.CountryOfBirthSort"
+                   asp-route-currentFilter="@Model.CurrentFilter" class="sort-link">
+                    <span>@Html.DisplayNameFor(model => model.Learners[0].CountryOfBirth)</span>
+                    <i class="fa fa-fw fa-sort"></i>
+                </a>
+            </th>
+            <th>
+                <a asp-page="./Index" asp-route-sortOrder="@Model.RegistrationDateSort"
+                   asp-route-currentFilter="@Model.CurrentFilter"
+                class="sort-link">
+                    <span>@Html.DisplayNameFor(model => model.Learners[0].Learner_registration_date)</span>
+                    <i class="fa fa-fw fa-sort"></i>
+                </a>
+            </th>
+            <th>Actions</th>
+        </tr>
+
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Learners)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Learner_firstname)</td>
+                <td>@Html.DisplayFor(modelItem => item.Learner_lastname)</td>
+                <td>@Html.DisplayFor(modelItem => item.LearnerEmail)</td>
+                <td>@Html.DisplayFor(modelItem => item.CountryOfBirth)</td>
+                <td>@Html.DisplayFor(modelItem => item.Learner_registration_date)</td>
+                <td>
+                    <a asp-page="./Edit" asp-route-id="@item.LearnerID" class="btn btn-sm btn-warning">Edit</a> |
+                    <a asp-page="./Details" asp-route-id="@item.LearnerID" class="btn btn-sm btn-info">Details</a> |
+                    <a asp-page="./Delete" asp-route-id="@item.LearnerID" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+}
+
+@if (Model.Learners != null && Model.Learners.Any())
+{
+
+    var prevDisabled = !Model.Learners.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.Learners.HasNextPage ? "disabled" : "";
+
+
+<nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
+        <li class="page-item @(Model.Learners.HasPreviousPage ? "" : "disabled")">
+            <a class="page-link" asp-page="./Index"
+               asp-route-sortOrder="@Model.CurrentSort"
+               asp-route-pageIndex="@(Model.Learners.PageIndex - 1)"
+               asp-route-currentFilter="@Model.CurrentFilter"
+               aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+                <span class="visually-hidden">Previous</span>
+            </a>
+        </li>
+
+        <li class="page-item disabled">
+            <span class="page-link">
+                Page @Model.Learners.PageIndex
+            </span>
+        </li>
+
+        <li class="page-item @(Model.Learners.HasNextPage ? "" : "disabled")">
+            <a class="page-link" asp-page="./Index"
+               asp-route-sortOrder="@Model.CurrentSort"
+               asp-route-pageIndex="@(Model.Learners.PageIndex + 1)"
+               asp-route-currentFilter="@Model.CurrentFilter"
+               aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+                <span class="visually-hidden">Next</span>
+            </a>
+        </li>
+    </ul>
+</nav>
+}

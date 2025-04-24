@@ -1,0 +1,107 @@
+﻿@page
+@model TechSkillConnect.Pages.Tutorpage.TutorCreatingProfileModel
+
+@{
+    ViewData["Title"] = "Tutor Profile Creation";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutor Information</title>
+</head>
+<body>
+    <div class="new-container">
+        <header>
+            <h1>Profile Information</h1>
+        </header>
+    </div>
+
+<form method="post">
+    <div class="email-signup-container">
+        <div class="field-group">
+            <p class="field-label">Skills you teach</p>
+            <select id="language" asp-for="TutorProfile.Language" class="custom-dropdown" required>
+                <option value="AI">AI</option>
+                <option value="Python">Python</option>
+                <option value="Cloud Computing">Cloud Computing</option>
+                <option value="Machine Learning">Machine Learning</option>
+            </select>
+            <span asp-validation-for="TutorProfile.Language" class="text-danger"></span>
+        </div>
+
+        <div class="field-group">
+            <p class="field-label">Years of experience</p>
+            <select id="experience" asp-for="TutorProfile.YearsOfExperience" class="custom-dropdown" required>
+                <option value="0-1">0-1 years</option>
+                <option value="2-3">2-3 years</option>
+                <option value="4-5">4-5 years</option>
+                <option value="6-10">6-10 years</option>
+                <option value="10-20">10+ years</option>
+            </select>
+            <span asp-validation-for="TutorProfile.YearsOfExperience" class="text-danger"></span>
+        </div>
+
+        <div class="field-group">
+            <p class="field-label">Skill level you teach</p>
+            <select id="skillLevel" asp-for="TutorProfile.SkillLevel" class="custom-dropdown" required>
+                <option value="Beginner">Beginner</option>
+                <option value="Intermediate">Intermediate</option>
+                <option value="Advanced">Advanced</option>
+                <option value="All Levels">All Levels</option>
+            </select>
+            <span asp-validation-for="TutorProfile.SkillLevel" class="text-danger"></span>
+        </div>
+
+        <div class="field-group">
+            <p class="field-label">Price: CAD /per session</p>
+            <p class="session-duration">(50 minutes per session)</p>
+            <select id="sessionPrice" asp-for="TutorProfile.FeePerSession" class="custom-dropdown" required>
+                <option value="10">10 CAD</option>
+                <option value="20">20 CAD</option>
+                <option value="30">30 CAD</option>
+                <option value="40">40 CAD</option>
+                <option value="50">50 CAD</option>
+                <option value="60">60 CAD</option>
+                <option value="70">70 CAD</option>
+                <option value="80">80 CAD</option>
+                <option value="90">90 CAD</option>
+                <option value="100">100 CAD</option>
+            </select>
+            <span asp-validation-for="TutorProfile.FeePerSession" class="text-danger"></span>
+        </div>
+
+        <div class="field-group">
+            <label for="selfHeadline">Your Headline</label>
+            <input type="text" id="selfHeadline" asp-for="TutorProfile.SelfHeadline" class="uniform-input" placeholder="Enter your headline">
+            <span asp-validation-for="TutorProfile.SelfHeadline" class="text-danger"></span>
+        </div>
+
+        <div class="field-group">
+            <label for="selfIntro">Self Introduction</label>
+            <textarea id="selfIntro" asp-for="TutorProfile.SelfIntro" class="uniform-input" placeholder="Write a short introduction..." rows="5"></textarea>
+            <span asp-validation-for="TutorProfile.SelfIntro" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="button-container">
+        <button type="button" class="button button-back" onclick="goBack()">Back</button>
+        <button type="submit" class="button button-next">Next</button>
+    </div>
+</form>
+
+    <script>
+        function goBack() {
+            window.location.href = "/Tutorpage/tutor_creating_profile_PI"; // Adjusted path
+        }
+    </script>
+</body>
+</html>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
