@@ -8,16 +8,23 @@ var builder = WebApplication.CreateBuilder(args);
 // ✅ Configure Cookie Policy to allow TempData persistence
 builder.Services.Configure<CookiePolicyOptions>(options =>
 {
-    options.MinimumSameSitePolicy = SameSiteMode.Lax; // Allows cookies across requests
+    options.MinimumSameSitePolicy = SameSiteMode.None;  // ✅ Allows cookies across requests
 });
 
-// ✅ Enable session management
+// 2. Configure authentication cookie (for login/session persistence)
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Cookie.SameSite = SameSiteMode.None;         // ✅ Ensures auth cookie works in Azure
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;  // ✅ Ensures HTTPS cookies
+});
+
+// 3. Configure session cookie (if you're using session)
 builder.Services.AddSession(options =>
 {
     options.Cookie.Name = ".AspNetCore.Session";
     options.Cookie.HttpOnly = true;
-    options.Cookie.SameSite = SameSiteMode.Lax;  // ✅ Allows cross-site cookies
-    options.Cookie.SecurePolicy = CookieSecurePolicy.None;  // ✅ Allows HTTP (Only for development)
+    options.Cookie.SameSite = SameSiteMode.None;         // ✅ Same for session cookie
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 });
 
 
