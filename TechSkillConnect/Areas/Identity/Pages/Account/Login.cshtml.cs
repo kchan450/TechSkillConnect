@@ -131,7 +131,10 @@ namespace TechSkillConnect.Areas.Identity.Pages.Account
                     {
                         return LocalRedirect("~/Learnerpage/learner_dashboard");
                     }
-
+                    else if (await _userManager.IsInRoleAsync(user, "Admin"))  // ✅ Add this
+                    {
+                        return LocalRedirect("~/Admin/Index");  // ✅ Admin page
+                    }
                     // fallback
                     return LocalRedirect(returnUrl);
                 }
