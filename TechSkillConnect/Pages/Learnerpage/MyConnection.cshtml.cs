@@ -30,7 +30,18 @@ namespace TechSkillConnect.Pages.Learnerpage
 
             if (learner == null)
             {
-                return NotFound();
+                // Create a new Learner record for the user
+                learner = new Learner
+                {
+                    UserID = userId,
+                    Learner_firstname = "Unknown", // Default value
+                    Learner_lastname = "Unknown", // Default value
+                    LearnerEmail = "unknown@example.com", // Default value (must be a valid email)
+                    CountryOfBirth = "Not Specified" // Default value
+                    // Learner_registration_date is already set to DateTime.UtcNow by default
+                };
+                _context.Learners.Add(learner);
+                await _context.SaveChangesAsync();
             }
 
             Connections = await _context.Connections
