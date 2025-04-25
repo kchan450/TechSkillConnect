@@ -40,7 +40,7 @@ namespace TechSkillConnect.Pages.Admin.Connections
             //only admin user can access this page
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            if (userId != "d1a93e6f-8a9b-455e-9b47-5fc12458e530") //admin user id example for account t1@t.com
+            if (userId != "db0c6b20-0021-425e-998e-c3feb36c6364") //admin user id example for account t1@t.com
             {
                 Response.Redirect("/Identity/Account/Login");
                 return;
