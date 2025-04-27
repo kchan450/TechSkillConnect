@@ -49,6 +49,6 @@ namespace TechSkillConnect.Models
         [Display(Name = "Tutor Registration Date")]
         public DateTime Tutor_registration_date { get; set; } = DateTime.UtcNow; // ✅ Auto-generated on creation
 
-        public TutorProfile TutorProfile { get; set; }
+        public TutorProfile? TutorProfile { get; set; }
     }
 }
