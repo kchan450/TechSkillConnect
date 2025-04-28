@@ -44,16 +44,20 @@ namespace TechSkillConnect.Pages.Admin.Tutors
         {
             try
             {
+                // ✅ Skip validation on Tutor.IdentityID because it's set later
+                ModelState.Remove("Tutor.IdentityID");
+
                 if (!ModelState.IsValid)
                 {
-                    // Reload dropdown if validation fails
-                    CountryOptions = new SelectList(await _context.Tutors
-                        .Select(t => t.CountryOfBirth)
-                        .Distinct()
-                        .ToListAsync());
-
+                    Console.WriteLine("ModelState is invalid.");
+                    foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+                    {
+                        Console.WriteLine(error.ErrorMessage);
+                    }
                     return Page();
                 }
+
+                Console.WriteLine("ModelState is valid.");
 
                 // 1. Ensure "Tutor" role exists
                 if (!await _roleManager.RoleExistsAsync("Tutor"))
@@ -61,7 +65,7 @@ namespace TechSkillConnect.Pages.Admin.Tutors
                     await _roleManager.CreateAsync(new IdentityRole("Tutor"));
                 }
 
-                // 2. Create AspNetUser
+                // 2. Create a user account in AspNetUsers
                 var user = new IdentityUser
                 {
                     UserName = Tutor.TutorEmail,
@@ -79,68 +83,47 @@ namespace TechSkillConnect.Pages.Admin.Tutors
                             Console.WriteLine($"Password validation error: {error.Description}");
                             ModelState.AddModelError(string.Empty, error.Description);
                         }
-
-                        // Reload dropdown
-                        CountryOptions = new SelectList(await _context.Tutors
-                            .Select(t => t.CountryOfBirth)
-                            .Distinct()
-                            .ToListAsync());
-
                         return Page();
                     }
                 }
 
                 var result = await _userManager.CreateAsync(user, "Abc123!");
-                if (!result.Succeeded)
+
+                if (result.Succeeded)
                 {
+                    Console.WriteLine($"User created successfully. UserId: {user.Id}");
+
+                    // 3. Add to "Tutor" role
+                    await _userManager.AddToRoleAsync(user, "Tutor");
+
+                    // 4. Add Tutor profile, linked to AspNetUsers.Id
+                    Tutor.IdentityID = user.Id;
+                    Tutor.Tutor_registration_date = DateTime.Now;
+
+                    _context.Tutors.Add(Tutor);
+                    await _context.SaveChangesAsync();
+
+                    Console.WriteLine("Tutor profile saved successfully.");
+                    return RedirectToPage("./Index");
+                }
+                else
+                {
+                    Console.WriteLine("User creation failed.");
                     foreach (var error in result.Errors)
                     {
-                        Console.WriteLine($"User creation error: {error.Description}");
-                        ModelState.AddModelError(string.Empty, error.Description);
-                    }
-
-                    // Reload dropdown
-                    CountryOptions = new SelectList(await _context.Tutors
-                        .Select(t => t.CountryOfBirth)
-                        .Distinct()
-                        .ToListAsync());
-
-                    return Page();
-                }
-
-                Console.WriteLine($"✅ User created: {user.Id}");
-
-                // 3. Assign "Tutor" role (AspNetUserRoles)
-                var roleResult = await _userManager.AddToRoleAsync(user, "Tutor");
-                if (!roleResult.Succeeded)
-                {
-                    foreach (var error in roleResult.Errors)
-                    {
-                        Console.WriteLine($"Role assignment error: {error.Description}");
+                        Console.WriteLine(error.Description);
                         ModelState.AddModelError(string.Empty, error.Description);
                     }
                     return Page();
                 }
-
-                Console.WriteLine($"✅ User assigned to role 'Tutor'.");
-
-                // 4. Add Tutor linked to AspNetUser
-                Tutor.IdentityID = user.Id;
-                Tutor.Tutor_registration_date = DateTime.UtcNow;
-
-                _context.Tutors.Add(Tutor);
-                await _context.SaveChangesAsync();
-
-                Console.WriteLine("🎉 Tutor record successfully created!");
-
-                return RedirectToPage("./Index");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Error: {ex.Message}");
-                ModelState.AddModelError("", "An unexpected error occurred.");
+                Console.WriteLine($"Exception occurred: {ex.Message}");
+                ModelState.AddModelError(string.Empty, "An unexpected error occurred.");
                 return Page();
             }
         }
+
     }
 }
