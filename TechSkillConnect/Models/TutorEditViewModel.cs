@@ -7,9 +7,11 @@ namespace TechSkillConnect.ViewModels
     {
         public int TutorID { get; set; }
 
-        [Required]
-        [Display(Name = "Username")]
-        public string Tutor_username { get; set; }
+        public string UserID { get; set; } = default!;
+
+        //        [Required]
+        //        [Display(Name = "Username")]
+        //        public string Tutor_username { get; set; }
 
         [Required]
         [Display(Name = "First Name")]
