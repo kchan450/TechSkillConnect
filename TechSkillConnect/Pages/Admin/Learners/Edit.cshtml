@@ -46,7 +46,11 @@
 
             <div class="form-group">
                 <label asp-for="Learner.Learner_registration_date" class="control-label"></label>
-                <input asp-for="Learner.Learner_registration_date" class="form-control" readonly />
+                <!-- Readonly visible field -->
+                <input class="form-control" readonly
+                       value="@Model.Learner.Learner_registration_date.ToString("yyyy-MM-dd HH:mm")" />
+                <!-- Hidden field to ensure value posts back -->
+                <input asp-for="Learner.Learner_registration_date" type="hidden" />
             </div>
 
             <div class="form-group">

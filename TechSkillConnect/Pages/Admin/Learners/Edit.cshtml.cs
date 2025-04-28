@@ -55,6 +55,14 @@ namespace TechSkillConnect.Pages.Admin.Learners
                     return Page();
                 }
 
+                // ✅ Debug: After ModelState validation
+                Console.WriteLine("ModelState is valid.");
+                Console.WriteLine($"LearnerID: {Learner.LearnerID}");
+                Console.WriteLine($"First Name: {Learner.Learner_firstname}");
+                Console.WriteLine($"Last Name: {Learner.Learner_lastname}");
+                Console.WriteLine($"Email: {Learner.LearnerEmail}");
+                Console.WriteLine($"Country: {Learner.CountryOfBirth}");
+
                 // Re-fetch the existing learner from the database
                 var existingLearner = await _context.Learners.AsNoTracking()
                     .FirstOrDefaultAsync(l => l.LearnerID == Learner.LearnerID);
@@ -63,6 +71,10 @@ namespace TechSkillConnect.Pages.Admin.Learners
                 {
                     return NotFound();
                 }
+
+                // ✅ Debug: After fetching existing learner
+                Console.WriteLine($"Existing UserID: {existingLearner.UserID}");
+                Console.WriteLine($"Existing Registration Date: {existingLearner.Learner_registration_date}");
 
                 // Ensure UserID and Registration Date remain unchanged
                 Learner.UserID = existingLearner.UserID;
@@ -75,11 +87,11 @@ namespace TechSkillConnect.Pages.Admin.Learners
                 _context.Entry(Learner).Property(l => l.LearnerEmail).IsModified = true;
                 _context.Entry(Learner).Property(l => l.CountryOfBirth).IsModified = true;
 
-                // Registration Date and UserID are NOT modified
-
+                // ✅ Debug: Before saving changes
+                Console.WriteLine("About to save changes...");
                 await _context.SaveChangesAsync();
+                Console.WriteLine("Changes saved successfully.");
 
-                Console.WriteLine("Learner profile updated successfully.");
                 return RedirectToPage("./Index");
             }
             catch (DbUpdateConcurrencyException)
@@ -100,6 +112,7 @@ namespace TechSkillConnect.Pages.Admin.Learners
                 return Page();
             }
         }
+
 
 
         private bool LearnerExists(int id)
