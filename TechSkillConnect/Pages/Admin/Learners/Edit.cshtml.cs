@@ -87,10 +87,24 @@ namespace TechSkillConnect.Pages.Admin.Learners
                 _context.Entry(Learner).Property(l => l.LearnerEmail).IsModified = true;
                 _context.Entry(Learner).Property(l => l.CountryOfBirth).IsModified = true;
 
-                // ✅ Debug: Before saving changes
-                Console.WriteLine("About to save changes...");
+                // ✅ Debug: Before saving learner changes
+                Console.WriteLine("About to save learner changes...");
                 await _context.SaveChangesAsync();
-                Console.WriteLine("Changes saved successfully.");
+                Console.WriteLine("Learner changes saved successfully.");
+
+                // ✅ Now update AspNetUsers if LearnerEmail changed
+                var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == Learner.UserID);
+                if (user != null)
+                {
+                    user.UserName = Learner.LearnerEmail;
+                    user.Email = Learner.LearnerEmail;
+
+                    // ✅ Debug log for updating user
+                    Console.WriteLine($"Updating AspNetUser: {user.Id} with new email: {user.Email}");
+
+                    await _context.SaveChangesAsync();
+                    Console.WriteLine("AspNetUser updated successfully.");
+                }
 
                 return RedirectToPage("./Index");
             }
@@ -112,6 +126,7 @@ namespace TechSkillConnect.Pages.Admin.Learners
                 return Page();
             }
         }
+
 
 
 
