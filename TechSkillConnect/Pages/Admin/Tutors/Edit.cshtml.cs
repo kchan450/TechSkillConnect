@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using TechSkillConnect.Data;
-using TechSkillConnect.ViewModels;
+using TechSkillConnect.Models;
 
 namespace TechSkillConnect.Pages.Admin.Tutors
 {
@@ -19,67 +19,50 @@ namespace TechSkillConnect.Pages.Admin.Tutors
         }
 
         [BindProperty]
-        public TutorEditViewModel Tutor { get; set; } = default!;
+        public Tutor Tutor { get; set; } = default!;  // Directly bind Tutor.cs
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
             if (id == null)
                 return NotFound();
 
-            var tutorEntity = await _context.Tutors.FindAsync(id);
-            if (tutorEntity == null)
-                return NotFound();
+            Tutor = await _context.Tutors.FirstOrDefaultAsync(t => t.TutorID == id);
 
-            Tutor = new TutorEditViewModel
-            {
-                UserID = tutorEntity.IdentityID,  // ✅ Correct
-                Tutor_firstname = tutorEntity.Tutor_firstname,
-                Tutor_lastname = tutorEntity.Tutor_lastname,
-                TutorEmail = tutorEntity.TutorEmail,
-                Tutor_phone = tutorEntity.Tutor_phone,
-                CountryOfBirth = tutorEntity.CountryOfBirth,
-                Tutor_registration_date = tutorEntity.Tutor_registration_date
-                // Assuming TutorEntity has UserID
-            };
+            if (Tutor == null)
+                return NotFound();
 
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
-            ModelState.Remove("Tutor.UserID");
+            ModelState.Remove("Tutor.IdentityID");  // Remove IdentityID from validation
 
             if (!ModelState.IsValid)
                 return Page();
 
-            var tutorEntity = await _context.Tutors.AsNoTracking()
+            var existingTutor = await _context.Tutors.AsNoTracking()
                 .FirstOrDefaultAsync(t => t.TutorID == Tutor.TutorID);
 
-            if (tutorEntity == null)
+            if (existingTutor == null)
                 return NotFound();
 
-            // Preserve UserID and Registration Date
-            Tutor.UserID = tutorEntity.IdentityID;  // ✅ Correct // Assuming TutorEditViewModel has UserID
-            Tutor.Tutor_registration_date = tutorEntity.Tutor_registration_date;
+            // Preserve IdentityID and Registration Date
+            Tutor.IdentityID = existingTutor.IdentityID;
+            Tutor.Tutor_registration_date = existingTutor.Tutor_registration_date;
 
-            // Map back to Tutor Entity
-            var updatedTutor = new Models.Tutor
-            {
-                TutorID = Tutor.TutorID,
-                IdentityID = Tutor.UserID,
-                Tutor_firstname = Tutor.Tutor_firstname,
-                Tutor_lastname = Tutor.Tutor_lastname,
-                TutorEmail = Tutor.TutorEmail,
-                Tutor_phone = Tutor.Tutor_phone,
-                CountryOfBirth = Tutor.CountryOfBirth,
-                Tutor_registration_date = Tutor.Tutor_registration_date
-            };
+            // Update specific fields
+            _context.Attach(Tutor);
+            _context.Entry(Tutor).Property(t => t.Tutor_firstname).IsModified = true;
+            _context.Entry(Tutor).Property(t => t.Tutor_lastname).IsModified = true;
+            _context.Entry(Tutor).Property(t => t.TutorEmail).IsModified = true;
+            _context.Entry(Tutor).Property(t => t.Tutor_phone).IsModified = true;
+            _context.Entry(Tutor).Property(t => t.CountryOfBirth).IsModified = true;
 
-            _context.Attach(updatedTutor).State = EntityState.Modified;
             await _context.SaveChangesAsync();
 
             // Update AspNetUsers
-            var user = await _userManager.FindByIdAsync(Tutor.UserID);
+            var user = await _userManager.FindByIdAsync(Tutor.IdentityID);
             if (user != null)
             {
                 user.UserName = Tutor.TutorEmail;
