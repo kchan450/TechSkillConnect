@@ -15,11 +15,13 @@ namespace TechSkillConnect.Pages.Admin.Tutors
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public CreateModel(ApplicationDbContext context, UserManager<IdentityUser> userManager)
+        public CreateModel(ApplicationDbContext context, UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             _context = context;
             _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         [BindProperty]
@@ -53,7 +55,13 @@ namespace TechSkillConnect.Pages.Admin.Tutors
                     return Page();
                 }
 
-                // 1. Create AspNetUser
+                // 1. Ensure "Tutor" role exists
+                if (!await _roleManager.RoleExistsAsync("Tutor"))
+                {
+                    await _roleManager.CreateAsync(new IdentityRole("Tutor"));
+                }
+
+                // 2. Create AspNetUser
                 var user = new IdentityUser
                 {
                     UserName = Tutor.TutorEmail,
@@ -102,7 +110,21 @@ namespace TechSkillConnect.Pages.Admin.Tutors
 
                 Console.WriteLine($"✅ User created: {user.Id}");
 
-                // 2. Add Tutor linked to AspNetUser
+                // 3. Assign "Tutor" role (AspNetUserRoles)
+                var roleResult = await _userManager.AddToRoleAsync(user, "Tutor");
+                if (!roleResult.Succeeded)
+                {
+                    foreach (var error in roleResult.Errors)
+                    {
+                        Console.WriteLine($"Role assignment error: {error.Description}");
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+                    return Page();
+                }
+
+                Console.WriteLine($"✅ User assigned to role 'Tutor'.");
+
+                // 4. Add Tutor linked to AspNetUser
                 Tutor.IdentityID = user.Id;
                 Tutor.Tutor_registration_date = DateTime.UtcNow;
 
