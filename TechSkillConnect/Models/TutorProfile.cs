@@ -27,7 +27,7 @@ namespace TechSkillConnect.Models
         public string SkillLevel { get; set; }
 
         [StringLength(100, ErrorMessage = "Certificate name cannot exceed 100 characters.")]
-        public string? Certificate { get; set; }
+  //      public string? Certificate { get; set; }
 
         [Required(ErrorMessage = "Fee per session is required.")]
         [Range(0, 1000, ErrorMessage = "Fee per session must be between 0 and 1000.")]
