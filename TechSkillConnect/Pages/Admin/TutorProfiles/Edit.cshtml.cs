@@ -24,6 +24,7 @@ namespace TechSkillConnect.Pages.Admin.TutorProfiles
         public TutorProfile TutorProfile { get; set; } = default!;
 
         public SelectList LanguageOptions { get; set; } = default!;
+        public SelectList YearsOfExperienceOptions { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -44,7 +45,11 @@ namespace TechSkillConnect.Pages.Admin.TutorProfiles
             TutorProfile = tutorprofile;
 
             ViewData["TutorID"] = new SelectList(_context.Tutors, "TutorID", "TutorEmail", TutorProfile.TutorID);
+
             LanguageOptions = GetLanguageOptions(TutorProfile.Language);  // Pass current value
+
+            YearsOfExperienceOptions = GetYearsOfExperienceOptions(TutorProfile.YearsOfExperience);
+
 
             return Page();
         }
@@ -55,6 +60,8 @@ namespace TechSkillConnect.Pages.Admin.TutorProfiles
             {
                 ViewData["TutorID"] = new SelectList(_context.Tutors, "TutorID", "TutorEmail", TutorProfile.TutorID);
                 LanguageOptions = GetLanguageOptions(TutorProfile.Language);  // Ensure correct selection
+                YearsOfExperienceOptions = GetYearsOfExperienceOptions(TutorProfile.YearsOfExperience);
+
                 return Page();
             }
 
@@ -102,6 +109,24 @@ namespace TechSkillConnect.Pages.Admin.TutorProfiles
             }
 
             return new SelectList(languages, selectedLanguage);
+        }
+
+        private SelectList GetYearsOfExperienceOptions(string? selectedExperience)
+        {
+            var experiences = new List<string>
+    {
+        "0-2",
+        "3-5",
+        "6-10",
+        "10+"
+    };
+
+            if (!string.IsNullOrEmpty(selectedExperience) && !experiences.Contains(selectedExperience))
+            {
+                experiences.Insert(0, selectedExperience);
+            }
+
+            return new SelectList(experiences, selectedExperience);
         }
     }
 }
