@@ -69,7 +69,8 @@ namespace TechSkillConnect.Pages.Admin.Tutors
                 var user = new IdentityUser
                 {
                     UserName = Tutor.TutorEmail,
-                    Email = Tutor.TutorEmail
+                    Email = Tutor.TutorEmail,
+                    EmailConfirmed = true
                 };
 
                 var passwordValidators = _userManager.PasswordValidators;

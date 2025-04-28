@@ -50,13 +50,7 @@
                 </a>
             </th>
 
-            <th>
-                <a asp-page="./Index" asp-route-sortOrder="@Model.CertificateSort"
-                   asp-route-currentFilter="@Model.CurrentFilter" class="sort-link">
-                    <span>@Html.DisplayNameFor(model => model.TutorProfiles[0].Certificate)</span>
-                    <i class="fa fa-fw fa-sort"></i>
-                </a>
-            </th>
+
 
             <th>
                 <a asp-page="./Index" asp-route-sortOrder="@Model.FeePerSessionSort"
