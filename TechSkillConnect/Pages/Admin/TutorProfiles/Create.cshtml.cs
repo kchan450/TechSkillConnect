@@ -29,7 +29,13 @@ namespace TechSkillConnect.Pages.Admin.TutorProfiles
         {
             ViewData["TutorID"] = new SelectList(_context.Tutors, "TutorID", "TutorEmail");
 
-            TutorProfile = new TutorProfile(); // Ensure TutorProfile is initialized
+            TutorProfile = new TutorProfile
+            {
+                Language = "Machine Learning",
+                YearsOfExperience = "0-2",
+                SkillLevel = "Beginner",
+                FeePerSession = 10
+            };
 
             LoadDropdowns();
             return Page();
@@ -61,33 +67,25 @@ namespace TechSkillConnect.Pages.Admin.TutorProfiles
         private SelectList GetSkillOptions(string? selectedSkill = null)
         {
             var skills = new List<string> { "Machine Learning", "Python", "Java", "AI", "Data Science" };
-            if (!string.IsNullOrEmpty(selectedSkill) && !skills.Contains(selectedSkill))
-                skills.Insert(0, selectedSkill);
-            return new SelectList(skills, selectedSkill);
+            return new SelectList(skills, selectedSkill ?? skills[0]);
         }
 
         private SelectList GetExperienceOptions(string? selectedExperience = null)
         {
             var experiences = new List<string> { "0-2", "3-5", "6-10", "10+" };
-            if (!string.IsNullOrEmpty(selectedExperience) && !experiences.Contains(selectedExperience))
-                experiences.Insert(0, selectedExperience);
-            return new SelectList(experiences, selectedExperience);
+            return new SelectList(experiences, selectedExperience ?? experiences[0]);
         }
 
         private SelectList GetSkillLevelOptions(string? selectedLevel = null)
         {
             var levels = new List<string> { "Beginner", "Intermediate", "Advanced", "Expert" };
-            if (!string.IsNullOrEmpty(selectedLevel) && !levels.Contains(selectedLevel))
-                levels.Insert(0, selectedLevel);
-            return new SelectList(levels, selectedLevel);
+            return new SelectList(levels, selectedLevel ?? levels[0]);
         }
 
         private SelectList GetFeeOptions(int selectedFee)
         {
             var fees = new List<int> { 10, 20, 30, 40, 50, 75, 100 };
-            if (selectedFee != 0 && !fees.Contains(selectedFee))
-                fees.Insert(0, selectedFee);
-            return new SelectList(fees, selectedFee);
+            return new SelectList(fees, selectedFee != 0 ? selectedFee : fees[0]);
         }
     }
 }
