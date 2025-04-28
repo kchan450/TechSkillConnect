@@ -47,6 +47,8 @@ namespace TechSkillConnect.Pages.Admin.Tutors
 
         public async Task<IActionResult> OnPostAsync()
         {
+            ModelState.Remove("Tutor.UserID");
+
             if (!ModelState.IsValid)
                 return Page();
 
