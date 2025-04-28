@@ -90,10 +90,21 @@ namespace TechSkillConnect.Pages.Admin.Learners
                     user.NormalizedUserName = Learner.LearnerEmail.ToUpperInvariant();
                     user.NormalizedEmail = Learner.LearnerEmail.ToUpperInvariant();
 
+
                     var updateResult = await _userManager.UpdateAsync(user);
                     if (updateResult.Succeeded)
                     {
                         Console.WriteLine("AspNetUser updated successfully.");
+
+                        user.NormalizedUserName = Learner.LearnerEmail.ToUpperInvariant();
+                        user.NormalizedEmail = Learner.LearnerEmail.ToUpperInvariant();
+
+                        _context.Attach(user);
+                        _context.Entry(user).Property(u => u.NormalizedUserName).IsModified = true;
+                        _context.Entry(user).Property(u => u.NormalizedEmail).IsModified = true;
+
+                        await _context.SaveChangesAsync();
+                        Console.WriteLine("Normalized fields updated via DbContext.");
                     }
                     else
                     {
