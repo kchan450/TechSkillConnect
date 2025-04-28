@@ -23,8 +23,7 @@ namespace TechSkillConnect.Pages.Admin.TutorProfiles
         [BindProperty]
         public TutorProfile TutorProfile { get; set; } = default!;
 
-        // 🔹 Add Language dropdown property
-        public SelectList LanguageOptions { get; set; }
+        public SelectList LanguageOptions { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -33,9 +32,8 @@ namespace TechSkillConnect.Pages.Admin.TutorProfiles
                 return NotFound();
             }
 
-            // 🔹 Fetch the TutorProfile
             var tutorprofile = await _context.TutorProfiles
-                .Include(tp => tp.Tutor)  // Optional: Include Tutor if needed
+                .Include(tp => tp.Tutor)
                 .FirstOrDefaultAsync(m => m.ProfileID == id);
 
             if (tutorprofile == null)
@@ -45,18 +43,8 @@ namespace TechSkillConnect.Pages.Admin.TutorProfiles
 
             TutorProfile = tutorprofile;
 
-            // 🔹 Populate TutorID dropdown (existing logic)
             ViewData["TutorID"] = new SelectList(_context.Tutors, "TutorID", "TutorEmail");
-
-            // 🔹 Populate Language dropdown (hardcoded list)
-            LanguageOptions = new SelectList(new List<string>
-            {
-                "English",
-                "French",
-                "Spanish",
-                "Japanese",
-                "Mandarin"
-            });
+            LanguageOptions = GetLanguageOptions();
 
             return Page();
         }
@@ -65,18 +53,8 @@ namespace TechSkillConnect.Pages.Admin.TutorProfiles
         {
             if (!ModelState.IsValid)
             {
-                // 🔹 Reload dropdowns if validation fails
                 ViewData["TutorID"] = new SelectList(_context.Tutors, "TutorID", "TutorEmail");
-
-                LanguageOptions = new SelectList(new List<string>
-                {
-                    "English",
-                    "French",
-                    "Spanish",
-                    "Japanese",
-                    "Mandarin"
-                });
-
+                LanguageOptions = GetLanguageOptions();
                 return Page();
             }
 
@@ -104,6 +82,19 @@ namespace TechSkillConnect.Pages.Admin.TutorProfiles
         private bool TutorProfileExists(int id)
         {
             return _context.TutorProfiles.Any(e => e.ProfileID == id);
+        }
+
+        private SelectList GetLanguageOptions()
+        {
+            var languages = new List<string>
+            {
+                "Machine Learning",
+                "Python",
+                "Java",
+                "AI",
+                "Data Science"
+            };
+            return new SelectList(languages);
         }
     }
 }
