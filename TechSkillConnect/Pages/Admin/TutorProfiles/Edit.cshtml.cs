@@ -43,8 +43,8 @@ namespace TechSkillConnect.Pages.Admin.TutorProfiles
 
             TutorProfile = tutorprofile;
 
-            ViewData["TutorID"] = new SelectList(_context.Tutors, "TutorID", "TutorEmail");
-            LanguageOptions = GetLanguageOptions();
+            ViewData["TutorID"] = new SelectList(_context.Tutors, "TutorID", "TutorEmail", TutorProfile.TutorID);
+            LanguageOptions = GetLanguageOptions(TutorProfile.Language);  // Pass current value
 
             return Page();
         }
@@ -53,8 +53,8 @@ namespace TechSkillConnect.Pages.Admin.TutorProfiles
         {
             if (!ModelState.IsValid)
             {
-                ViewData["TutorID"] = new SelectList(_context.Tutors, "TutorID", "TutorEmail");
-                LanguageOptions = GetLanguageOptions();
+                ViewData["TutorID"] = new SelectList(_context.Tutors, "TutorID", "TutorEmail", TutorProfile.TutorID);
+                LanguageOptions = GetLanguageOptions(TutorProfile.Language);  // Ensure correct selection
                 return Page();
             }
 
@@ -84,7 +84,7 @@ namespace TechSkillConnect.Pages.Admin.TutorProfiles
             return _context.TutorProfiles.Any(e => e.ProfileID == id);
         }
 
-        private SelectList GetLanguageOptions()
+        private SelectList GetLanguageOptions(string? selectedLanguage)
         {
             var languages = new List<string>
             {
@@ -94,7 +94,14 @@ namespace TechSkillConnect.Pages.Admin.TutorProfiles
                 "AI",
                 "Data Science"
             };
-            return new SelectList(languages);
+
+            // If the current value is missing, add it to the top
+            if (!string.IsNullOrEmpty(selectedLanguage) && !languages.Contains(selectedLanguage))
+            {
+                languages.Insert(0, selectedLanguage);
+            }
+
+            return new SelectList(languages, selectedLanguage);
         }
     }
 }
