@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -92,18 +93,27 @@ namespace TechSkillConnect.Pages.Admin.Learners
                 await _context.SaveChangesAsync();
                 Console.WriteLine("Learner changes saved successfully.");
 
-                // ✅ Now update AspNetUsers if LearnerEmail changed
-                var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == Learner.UserID);
+                // ✅ Now update AspNetUsers using UserManager
+                var user = await _userManager.FindByIdAsync(Learner.UserID);
                 if (user != null)
                 {
                     user.UserName = Learner.LearnerEmail;
                     user.Email = Learner.LearnerEmail;
 
-                    // ✅ Debug log for updating user
-                    Console.WriteLine($"Updating AspNetUser: {user.Id} with new email: {user.Email}");
-
-                    await _context.SaveChangesAsync();
-                    Console.WriteLine("AspNetUser updated successfully.");
+                    var updateResult = await _userManager.UpdateAsync(user);
+                    if (updateResult.Succeeded)
+                    {
+                        Console.WriteLine("AspNetUser updated successfully.");
+                    }
+                    else
+                    {
+                        foreach (var error in updateResult.Errors)
+                        {
+                            Console.WriteLine($"AspNetUser update error: {error.Description}");
+                            ModelState.AddModelError(string.Empty, error.Description);
+                        }
+                        return Page(); // Stay on page if user update fails
+                    }
                 }
 
                 return RedirectToPage("./Index");
@@ -126,6 +136,7 @@ namespace TechSkillConnect.Pages.Admin.Learners
                 return Page();
             }
         }
+
 
 
 
