@@ -60,7 +60,7 @@ namespace TechSkillConnect.Pages.Admin.Learners
                     Email = Learner.LearnerEmail
                 };
 
-                var result = await _userManager.CreateAsync(user, "ABC123!");
+                var result = await _userManager.CreateAsync(user, "Abc123!");
 
                 if (result.Succeeded)
                 {
