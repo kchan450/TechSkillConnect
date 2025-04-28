@@ -45,6 +45,7 @@
             <div class="form-group">
                 <label asp-for="Learner.Learner_registration_date" class="control-label"></label>
                 <input asp-for="Learner.Learner_registration_date" class="form-control" readonly
+                       type="datetime-local"
                        value="@Model.Learner.Learner_registration_date.ToString("yyyy-MM-ddTHH:mm")" />
             </div>
 
