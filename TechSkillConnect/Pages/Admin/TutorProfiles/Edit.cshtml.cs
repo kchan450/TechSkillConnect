@@ -13,15 +13,18 @@ namespace TechSkillConnect.Pages.Admin.TutorProfiles
 {
     public class EditModel : PageModel
     {
-        private readonly TechSkillConnect.Data.ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public EditModel(TechSkillConnect.Data.ApplicationDbContext context)
+        public EditModel(ApplicationDbContext context)
         {
             _context = context;
         }
 
         [BindProperty]
         public TutorProfile TutorProfile { get; set; } = default!;
+
+        // 🔹 Add Language dropdown property
+        public SelectList LanguageOptions { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -30,22 +33,50 @@ namespace TechSkillConnect.Pages.Admin.TutorProfiles
                 return NotFound();
             }
 
-            var tutorprofile =  await _context.TutorProfiles.FirstOrDefaultAsync(m => m.ProfileID == id);
+            // 🔹 Fetch the TutorProfile
+            var tutorprofile = await _context.TutorProfiles
+                .Include(tp => tp.Tutor)  // Optional: Include Tutor if needed
+                .FirstOrDefaultAsync(m => m.ProfileID == id);
+
             if (tutorprofile == null)
             {
                 return NotFound();
             }
+
             TutorProfile = tutorprofile;
-           ViewData["TutorID"] = new SelectList(_context.Tutors, "TutorID", "TutorEmail");
+
+            // 🔹 Populate TutorID dropdown (existing logic)
+            ViewData["TutorID"] = new SelectList(_context.Tutors, "TutorID", "TutorEmail");
+
+            // 🔹 Populate Language dropdown (hardcoded list)
+            LanguageOptions = new SelectList(new List<string>
+            {
+                "English",
+                "French",
+                "Spanish",
+                "Japanese",
+                "Mandarin"
+            });
+
             return Page();
         }
 
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more information, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
             {
+                // 🔹 Reload dropdowns if validation fails
+                ViewData["TutorID"] = new SelectList(_context.Tutors, "TutorID", "TutorEmail");
+
+                LanguageOptions = new SelectList(new List<string>
+                {
+                    "English",
+                    "French",
+                    "Spanish",
+                    "Japanese",
+                    "Mandarin"
+                });
+
                 return Page();
             }
 

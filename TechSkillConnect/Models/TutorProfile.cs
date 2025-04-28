@@ -11,7 +11,7 @@ namespace TechSkillConnect.Models
         [ForeignKey("Tutor")]
         public int TutorID { get; set; }
 
-        [Required(ErrorMessage = "Language is required.")]
+        [Required(ErrorMessage = "Skills is required.")]
         [StringLength(50, ErrorMessage = "Language cannot exceed 50 characters.")]
         public string Language { get; set; }
 

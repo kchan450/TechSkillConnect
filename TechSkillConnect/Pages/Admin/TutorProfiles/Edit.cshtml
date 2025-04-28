@@ -22,9 +22,10 @@
 
             <div class="form-group">
                 <label asp-for="TutorProfile.Language" class="control-label"></label>
-                <input asp-for="TutorProfile.Language" class="form-control" />
+                <select asp-for="TutorProfile.Language" class="form-control" asp-items="Model.LanguageOptions"></select>
                 <span asp-validation-for="TutorProfile.Language" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="TutorProfile.YearsOfExperience" class="control-label"></label>
                 <input asp-for="TutorProfile.YearsOfExperience" class="form-control" />
