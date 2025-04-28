@@ -28,14 +28,6 @@ namespace TechSkillConnect.Pages.Admin.TutorProfiles
         [BindProperty(SupportsGet = true)]
         public string? SearchString { get; set; }
 
-        [BindProperty(SupportsGet = true)]
-        public string? SelectedLanguage { get; set; }
-
-        [BindProperty(SupportsGet = true)]
-        public string? SelectedSkillLevel { get; set; }
-
-        public SelectList? LanguageOptions { get; set; }
-        public SelectList? SkillLevelOptions { get; set; }
 
         public string LanguageSort { get; set; }
         public string YearsOfExperienceSort { get; set; }
@@ -80,8 +72,9 @@ namespace TechSkillConnect.Pages.Admin.TutorProfiles
             }
             currentFilter = SearchString;
 
-            IQueryable<TutorProfile> tutorsProfileIQ = from t in _context.TutorProfiles
-                                         select t;
+            IQueryable<TutorProfile> tutorsProfileIQ = _context.TutorProfiles
+                .Include(tp => tp.Tutor);  // Include the Tutor entity
+
             switch (sortOrder)
             {
                 case "language_desc":
@@ -165,19 +158,6 @@ namespace TechSkillConnect.Pages.Admin.TutorProfiles
 
          //   TutorProfiles = await _context.TutorProfiles.ToListAsync();
 
-            var languageQuery = _context.TutorProfiles
-               .OrderBy(t => t.Language)
-               .Select(t => t.Language)
-               .Distinct();
-
-            var SkillLevelQuery = _context.TutorProfiles
-              .OrderBy(t => t.SkillLevel)
-              .Select(t => t.SkillLevel)
-              .Distinct();
-
-
-            LanguageOptions = new SelectList(await languageQuery.ToListAsync());
-            SkillLevelOptions = new SelectList(await SkillLevelQuery.ToListAsync());
 
             // Define the base query for tutors profiles
    
@@ -188,26 +168,11 @@ namespace TechSkillConnect.Pages.Admin.TutorProfiles
             // Apply search filter
             if (!string.IsNullOrEmpty(SearchString))
             {
-                tutorsProfileIQ = tutorsProfileIQ.Where(t =>
-                    t.SkillLevel.Contains(SearchString) ||
-                    t.Language.Contains(SearchString) ||
-                    t.YearsOfExperience.ToString().Contains(SearchString) ||
-                    t.Certificate.Contains(SearchString) ||
-                    t.FeePerSession.ToString().Contains(SearchString) ||
-                    t.SelfIntro.Contains(SearchString));
+                tutorsProfileIQ = tutorsProfileIQ.Where(tp =>
+                    tp.Tutor.TutorEmail.Contains(SearchString) ||
+                    tp.Tutor.Tutor_phone.Contains(SearchString));
             }
 
-            // Apply language filter
-            if (!string.IsNullOrEmpty(SelectedLanguage))
-            {
-                tutorsProfileIQ = tutorsProfileIQ.Where(t => t.Language == SelectedLanguage);
-            }
-
-            // Apply skill level filter
-            if (!string.IsNullOrEmpty(SelectedSkillLevel))
-            {
-                tutorsProfileIQ = tutorsProfileIQ.Where(t => t.SkillLevel == SelectedSkillLevel);
-            }
 
             // Fetch tutor profiles
            // TutorProfiles = await query.ToListAsync();

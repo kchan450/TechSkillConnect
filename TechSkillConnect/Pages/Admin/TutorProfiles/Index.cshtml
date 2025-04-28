@@ -15,23 +15,10 @@
 <!-- 🔹 Search and Filter Form -->
 <form method="get">
 	<div class="form-group">
-		<label>Search Tutor Profiles:</label>
+		<label>Search Tutor Profiles: Enter Email or Phone no </label>
 		<input asp-for="SearchString" class="form-control" placeholder="Enter Language, skill level, or Certificate" />
 	</div>
 
-	<div class="form-group">
-		<label>Filter by Language:</label>
-		<select asp-for="SelectedLanguage" asp-items="Model.LanguageOptions" class="form-control">
-			<option value="">All</option>
-		</select>
-	</div>
-
-	<div class="form-group">
-		<label>Filter by Skill Level:</label>
-		<select asp-for="SelectedSkillLevel" asp-items="Model.SkillLevelOptions" class="form-control">
-			<option value="">All</option>
-		</select>
-	</div>
 	<button type="submit" class="btn btn-primary">Apply Filters</button>
 </form>
 @if (Model.TutorProfiles != null && Model.TutorProfiles.Any())
