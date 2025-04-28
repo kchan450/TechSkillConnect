@@ -60,6 +60,21 @@ namespace TechSkillConnect.Pages.Admin.Learners
                     Email = Learner.LearnerEmail
                 };
 
+                var passwordValidators = _userManager.PasswordValidators;
+                foreach (var validator in passwordValidators)
+                {
+                    var validationResult = await validator.ValidateAsync(_userManager, user, "Abc123!");
+                    if (!validationResult.Succeeded)
+                    {
+                        foreach (var error in validationResult.Errors)
+                        {
+                            Console.WriteLine($"Password validation error: {error.Description}");
+                            ModelState.AddModelError(string.Empty, error.Description);
+                        }
+                        return Page();
+                    }
+                }
+
                 var result = await _userManager.CreateAsync(user, "Abc123!");
 
                 if (result.Succeeded)
