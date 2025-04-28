@@ -28,6 +28,9 @@ namespace TechSkillConnect.Pages.Admin.TutorProfiles
         public IActionResult OnGet()
         {
             ViewData["TutorID"] = new SelectList(_context.Tutors, "TutorID", "TutorEmail");
+
+            TutorProfile = new TutorProfile(); // Ensure TutorProfile is initialized
+
             LoadDropdowns();
             return Page();
         }
@@ -49,10 +52,10 @@ namespace TechSkillConnect.Pages.Admin.TutorProfiles
 
         private void LoadDropdowns()
         {
-            SkillOptions = GetSkillOptions(TutorProfile.Language).ToList();
-            ExperienceOptions = GetExperienceOptions(TutorProfile.YearsOfExperience).ToList();
-            SkillLevelOptions = GetSkillLevelOptions(TutorProfile.SkillLevel).ToList();
-            FeeOptions = GetFeeOptions(TutorProfile.FeePerSession).ToList();
+            SkillOptions = GetSkillOptions(TutorProfile?.Language).ToList();
+            ExperienceOptions = GetExperienceOptions(TutorProfile?.YearsOfExperience).ToList();
+            SkillLevelOptions = GetSkillLevelOptions(TutorProfile?.SkillLevel).ToList();
+            FeeOptions = GetFeeOptions(TutorProfile?.FeePerSession ?? 0).ToList();
         }
 
         private SelectList GetSkillOptions(string? selectedSkill = null)
@@ -82,7 +85,7 @@ namespace TechSkillConnect.Pages.Admin.TutorProfiles
         private SelectList GetFeeOptions(int selectedFee)
         {
             var fees = new List<int> { 10, 20, 30, 40, 50, 75, 100 };
-            if (!fees.Contains(selectedFee))
+            if (selectedFee != 0 && !fees.Contains(selectedFee))
                 fees.Insert(0, selectedFee);
             return new SelectList(fees, selectedFee);
         }
