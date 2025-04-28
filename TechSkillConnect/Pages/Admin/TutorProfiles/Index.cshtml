@@ -26,6 +26,21 @@
 <table class="table">
 	<thead>
         <tr>
+                <th>
+                    <a asp-page="./Index" asp-route-sortOrder="@Model.TutorEmailSort"
+                       asp-route-currentFilter="@Model.CurrentFilter" class="sort-link">
+                        <span>Tutor Email</span>
+                        <i class="fa fa-fw fa-sort"></i>
+                    </a>
+                </th>
+                <th>
+                    <a asp-page="./Index" asp-route-sortOrder="@Model.LanguageSort"
+                       asp-route-currentFilter="@Model.CurrentFilter" class="sort-link">
+                        <span>Skill</span> <!-- Changed here -->
+                        <i class="fa fa-fw fa-sort"></i>
+                    </a>
+                </th>
+
             <th>
                 <a asp-page="./Index" asp-route-sortOrder="@Model.LanguageSort"
                    asp-route-currentFilter="@Model.CurrentFilter" class="sort-link">
@@ -84,6 +99,7 @@
 		@foreach (var item in Model.TutorProfiles)
 		{
 			<tr>
+                <td>@Html.DisplayFor(modelItem => item.Tutor.TutorEmail)</td>
 				<td>@Html.DisplayFor(modelItem => item.Language)</td>
 				<td>@Html.DisplayFor(modelItem => item.YearsOfExperience)</td>
 				<td>@Html.DisplayFor(modelItem => item.SkillLevel)</td>

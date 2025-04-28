@@ -1,16 +1,12 @@
-﻿using System.CodeDom.Compiler;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using TechSkillConnect.Data;
 using TechSkillConnect.Models;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace TechSkillConnect.Pages.Admin.TutorProfiles
 {
@@ -23,12 +19,10 @@ namespace TechSkillConnect.Pages.Admin.TutorProfiles
             _context = context;
         }
 
-    //    public IList<TutorProfile> TutorProfiles { get; set; } = new List<TutorProfile>();
-
         [BindProperty(SupportsGet = true)]
         public string? SearchString { get; set; }
 
-
+        public string TutorEmailSort { get; set; }
         public string LanguageSort { get; set; }
         public string YearsOfExperienceSort { get; set; }
         public string SkillLevelSort { get; set; }
@@ -46,13 +40,14 @@ namespace TechSkillConnect.Pages.Admin.TutorProfiles
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            if (userId != "db0c6b20-0021-425e-998e-c3feb36c6364") //admin user id example for account t1@t.com
+            if (userId != "db0c6b20-0021-425e-998e-c3feb36c6364") // Admin user ID
             {
                 Response.Redirect("/Identity/Account/Login");
                 return;
             }
 
             CurrentSort = sortOrder;
+            TutorEmailSort = sortOrder == "tutorEmail" ? "tutorEmail_desc" : "tutorEmail";
             LanguageSort = sortOrder == "language" ? "language_desc" : "language";
             YearsOfExperienceSort = sortOrder == "yearsOfExperience" ? "yearsOfExperience_desc" : "yearsOfExperience";
             SkillLevelSort = sortOrder == "skillLevel" ? "skillLevel_desc" : "skillLevel";
@@ -64,106 +59,36 @@ namespace TechSkillConnect.Pages.Admin.TutorProfiles
             if (SearchString != null)
             {
                 pageIndex = 1;
-
             }
             else
             {
                 SearchString = currentFilter;
             }
-            currentFilter = SearchString;
+            CurrentFilter = SearchString;
 
-            IQueryable<TutorProfile> tutorsProfileIQ = _context.TutorProfiles
-                .Include(tp => tp.Tutor);  // Include the Tutor entity
+            IQueryable<TutorProfile> tutorsProfileIQ = _context.TutorProfiles.Include(tp => tp.Tutor);
 
-            switch (sortOrder)
+            // Apply sorting
+            tutorsProfileIQ = sortOrder switch
             {
-                case "language_desc":
-
-                    tutorsProfileIQ = tutorsProfileIQ.OrderByDescending(t => t.Language);
-                    break;
-
-                case "yearsOfExperience_desc":
-
-                    tutorsProfileIQ = tutorsProfileIQ.OrderByDescending(t => t.YearsOfExperience);
-                    break;
-
-                case "skillLevel_desc":
-
-                    tutorsProfileIQ = tutorsProfileIQ.OrderByDescending(t => t.SkillLevel);
-                    break;
-
-                case "certificate_desc":
-
-                    tutorsProfileIQ = tutorsProfileIQ.OrderByDescending(t => t.Certificate);
-                    break;
-
-                case "feePerSession_desc":
-
-                    tutorsProfileIQ = tutorsProfileIQ.OrderByDescending(t => t.FeePerSession);
-                    break;
-
-                case "selfIntro_desc":
-
-                    tutorsProfileIQ = tutorsProfileIQ.OrderByDescending(t => t.SelfIntro);
-                    break;
-
-                case "selfHeadline_desc":
-
-                    tutorsProfileIQ = tutorsProfileIQ.OrderBy(t => t.SelfHeadline);
-                    break;
-
-
-                case "language":
-
-                    tutorsProfileIQ = tutorsProfileIQ.OrderBy(t => t.Language);
-                    break;
-
-                case "yearsOfExperience":
-
-                    tutorsProfileIQ = tutorsProfileIQ.OrderBy(t => t.YearsOfExperience);
-                    break;
-
-                case "skillLevel":
-
-                    tutorsProfileIQ = tutorsProfileIQ.OrderBy(t => t.SkillLevel);
-                    break;
-
-                case "certificate":
-
-                    tutorsProfileIQ = tutorsProfileIQ.OrderBy(t => t.Certificate);
-                    break;
-
-                case "feePerSession":
-
-                    tutorsProfileIQ = tutorsProfileIQ.OrderBy(t => t.FeePerSession);
-                    break;
-
-                case "selfIntro":
-
-                    tutorsProfileIQ = tutorsProfileIQ.OrderBy(t => t.SelfIntro);
-                    break;
-
-
-                case "selfHeadline":
-
-                    tutorsProfileIQ = tutorsProfileIQ.OrderBy(t => t.SelfHeadline);
-                    break;
-                    
-                default:
-
-                    tutorsProfileIQ = tutorsProfileIQ.OrderBy(t => t.Language);
-                    break;
-
-            }
-
-         //   TutorProfiles = await _context.TutorProfiles.ToListAsync();
-
-
-            // Define the base query for tutors profiles
-   
-            //var query = tutorsProfileIQ;
-           // var query = _context.TutorProfiles.AsQueryable();
-
+                "tutorEmail" => tutorsProfileIQ.OrderBy(t => t.Tutor.TutorEmail),
+                "tutorEmail_desc" => tutorsProfileIQ.OrderByDescending(t => t.Tutor.TutorEmail),
+                "language" => tutorsProfileIQ.OrderBy(t => t.Language),
+                "language_desc" => tutorsProfileIQ.OrderByDescending(t => t.Language),
+                "yearsOfExperience" => tutorsProfileIQ.OrderBy(t => t.YearsOfExperience),
+                "yearsOfExperience_desc" => tutorsProfileIQ.OrderByDescending(t => t.YearsOfExperience),
+                "skillLevel" => tutorsProfileIQ.OrderBy(t => t.SkillLevel),
+                "skillLevel_desc" => tutorsProfileIQ.OrderByDescending(t => t.SkillLevel),
+                "certificate" => tutorsProfileIQ.OrderBy(t => t.Certificate),
+                "certificate_desc" => tutorsProfileIQ.OrderByDescending(t => t.Certificate),
+                "feePerSession" => tutorsProfileIQ.OrderBy(t => t.FeePerSession),
+                "feePerSession_desc" => tutorsProfileIQ.OrderByDescending(t => t.FeePerSession),
+                "selfIntro" => tutorsProfileIQ.OrderBy(t => t.SelfIntro),
+                "selfIntro_desc" => tutorsProfileIQ.OrderByDescending(t => t.SelfIntro),
+                "selfHeadline" => tutorsProfileIQ.OrderBy(t => t.SelfHeadline),
+                "selfHeadline_desc" => tutorsProfileIQ.OrderByDescending(t => t.SelfHeadline),
+                _ => tutorsProfileIQ.OrderBy(t => t.Language),
+            };
 
             // Apply search filter
             if (!string.IsNullOrEmpty(SearchString))
@@ -173,13 +98,8 @@ namespace TechSkillConnect.Pages.Admin.TutorProfiles
                     tp.Tutor.Tutor_phone.Contains(SearchString));
             }
 
-
-            // Fetch tutor profiles
-           // TutorProfiles = await query.ToListAsync();
-
             int pageSize = 10;
             TutorProfiles = await PaginatedList<TutorProfile>.CreateAsync(tutorsProfileIQ.AsNoTracking(), pageIndex ?? 1, pageSize);
-
         }
     }
 }
