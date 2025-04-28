@@ -58,7 +58,6 @@ namespace TechSkillConnect.Pages.Admin.Learners
                 {
                     UserName = Learner.LearnerEmail,
                     Email = Learner.LearnerEmail,
-                    EmailConfirmed = true
                 };
 
                 var passwordValidators = _userManager.PasswordValidators;
@@ -81,6 +80,8 @@ namespace TechSkillConnect.Pages.Admin.Learners
                 if (result.Succeeded)
                 {
                     Console.WriteLine($"User created successfully. UserId: {user.Id}");
+
+                    user.EmailConfirmed = true;
 
                     await _userManager.AddToRoleAsync(user, "Learner");
 
