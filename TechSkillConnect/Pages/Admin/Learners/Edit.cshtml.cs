@@ -13,10 +13,13 @@ namespace TechSkillConnect.Pages.Admin.Learners
     public class EditModel : PageModel
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<IdentityUser> _userManager;  // ✅ Add this
 
-        public EditModel(ApplicationDbContext context)
+        // ✅ Inject UserManager in the constructor
+        public EditModel(ApplicationDbContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;  // ✅ Assign
         }
 
         [BindProperty]
@@ -43,7 +46,6 @@ namespace TechSkillConnect.Pages.Admin.Learners
         {
             try
             {
-                // Remove UserID from validation because it is set manually
                 ModelState.Remove("Learner.UserID");
 
                 if (!ModelState.IsValid)
@@ -51,20 +53,12 @@ namespace TechSkillConnect.Pages.Admin.Learners
                     var errors = ModelState.Values.SelectMany(v => v.Errors);
                     foreach (var error in errors)
                     {
-                        Console.WriteLine(error.ErrorMessage); // Log validation errors
+                        Console.WriteLine(error.ErrorMessage);
                     }
                     return Page();
                 }
 
-                // ✅ Debug: After ModelState validation
-                Console.WriteLine("ModelState is valid.");
-                Console.WriteLine($"LearnerID: {Learner.LearnerID}");
-                Console.WriteLine($"First Name: {Learner.Learner_firstname}");
-                Console.WriteLine($"Last Name: {Learner.Learner_lastname}");
-                Console.WriteLine($"Email: {Learner.LearnerEmail}");
-                Console.WriteLine($"Country: {Learner.CountryOfBirth}");
-
-                // Re-fetch the existing learner from the database
+                // ✅ Fetch existing learner
                 var existingLearner = await _context.Learners.AsNoTracking()
                     .FirstOrDefaultAsync(l => l.LearnerID == Learner.LearnerID);
 
@@ -73,32 +67,28 @@ namespace TechSkillConnect.Pages.Admin.Learners
                     return NotFound();
                 }
 
-                // ✅ Debug: After fetching existing learner
-                Console.WriteLine($"Existing UserID: {existingLearner.UserID}");
-                Console.WriteLine($"Existing Registration Date: {existingLearner.Learner_registration_date}");
-
-                // Ensure UserID and Registration Date remain unchanged
+                // Preserve UserID and Registration Date
                 Learner.UserID = existingLearner.UserID;
                 Learner.Learner_registration_date = existingLearner.Learner_registration_date;
 
-                // Attach Learner and explicitly mark editable fields as modified
+                // Update Learner fields
                 _context.Attach(Learner);
                 _context.Entry(Learner).Property(l => l.Learner_firstname).IsModified = true;
                 _context.Entry(Learner).Property(l => l.Learner_lastname).IsModified = true;
                 _context.Entry(Learner).Property(l => l.LearnerEmail).IsModified = true;
                 _context.Entry(Learner).Property(l => l.CountryOfBirth).IsModified = true;
 
-                // ✅ Debug: Before saving learner changes
-                Console.WriteLine("About to save learner changes...");
                 await _context.SaveChangesAsync();
                 Console.WriteLine("Learner changes saved successfully.");
 
-                // ✅ Now update AspNetUsers using UserManager
+                // ✅ Update AspNetUser
                 var user = await _userManager.FindByIdAsync(Learner.UserID);
                 if (user != null)
                 {
                     user.UserName = Learner.LearnerEmail;
                     user.Email = Learner.LearnerEmail;
+                    user.NormalizedUserName = Learner.LearnerEmail.ToUpperInvariant();
+                    user.NormalizedEmail = Learner.LearnerEmail.ToUpperInvariant();
 
                     var updateResult = await _userManager.UpdateAsync(user);
                     if (updateResult.Succeeded)
@@ -112,7 +102,7 @@ namespace TechSkillConnect.Pages.Admin.Learners
                             Console.WriteLine($"AspNetUser update error: {error.Description}");
                             ModelState.AddModelError(string.Empty, error.Description);
                         }
-                        return Page(); // Stay on page if user update fails
+                        return Page();
                     }
                 }
 
@@ -136,10 +126,6 @@ namespace TechSkillConnect.Pages.Admin.Learners
                 return Page();
             }
         }
-
-
-
-
 
         private bool LearnerExists(int id)
         {
