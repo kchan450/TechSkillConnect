@@ -81,6 +81,8 @@ namespace TechSkillConnect.Pages.Admin.Learners
                 {
                     Console.WriteLine($"User created successfully. UserId: {user.Id}");
 
+                    await _userManager.AddToRoleAsync(user, "Learner");
+
                     // 2. Add learner profile, linked to the AspNetUsers.Id
                     Learner.UserID = user.Id;
                     Learner.Learner_registration_date = DateTime.Now;
