@@ -25,31 +25,28 @@ namespace TechSkillConnect.Pages.Admin.TutorProfiles
 
         public SelectList LanguageOptions { get; set; } = default!;
         public SelectList YearsOfExperienceOptions { get; set; } = default!;
+        public SelectList SkillLevelOptions { get; set; } = default!;
+        public SelectList FeePerSessionOptions { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
             var tutorprofile = await _context.TutorProfiles
                 .Include(tp => tp.Tutor)
                 .FirstOrDefaultAsync(m => m.ProfileID == id);
 
             if (tutorprofile == null)
-            {
                 return NotFound();
-            }
 
             TutorProfile = tutorprofile;
 
             ViewData["TutorID"] = new SelectList(_context.Tutors, "TutorID", "TutorEmail", TutorProfile.TutorID);
-
-            LanguageOptions = GetLanguageOptions(TutorProfile.Language);  // Pass current value
-
+            LanguageOptions = GetLanguageOptions(TutorProfile.Language);
             YearsOfExperienceOptions = GetYearsOfExperienceOptions(TutorProfile.YearsOfExperience);
-
+            SkillLevelOptions = GetSkillLevelOptions(TutorProfile.SkillLevel);
+            FeePerSessionOptions = GetFeePerSessionOptions(TutorProfile.FeePerSession);
 
             return Page();
         }
@@ -59,9 +56,10 @@ namespace TechSkillConnect.Pages.Admin.TutorProfiles
             if (!ModelState.IsValid)
             {
                 ViewData["TutorID"] = new SelectList(_context.Tutors, "TutorID", "TutorEmail", TutorProfile.TutorID);
-                LanguageOptions = GetLanguageOptions(TutorProfile.Language);  // Ensure correct selection
+                LanguageOptions = GetLanguageOptions(TutorProfile.Language);
                 YearsOfExperienceOptions = GetYearsOfExperienceOptions(TutorProfile.YearsOfExperience);
-
+                SkillLevelOptions = GetSkillLevelOptions(TutorProfile.SkillLevel);
+                FeePerSessionOptions = GetFeePerSessionOptions(TutorProfile.FeePerSession);
                 return Page();
             }
 
@@ -74,13 +72,9 @@ namespace TechSkillConnect.Pages.Admin.TutorProfiles
             catch (DbUpdateConcurrencyException)
             {
                 if (!TutorProfileExists(TutorProfile.ProfileID))
-                {
                     return NotFound();
-                }
                 else
-                {
                     throw;
-                }
             }
 
             return RedirectToPage("./Index");
@@ -102,31 +96,40 @@ namespace TechSkillConnect.Pages.Admin.TutorProfiles
                 "Data Science"
             };
 
-            // If the current value is missing, add it to the top
             if (!string.IsNullOrEmpty(selectedLanguage) && !languages.Contains(selectedLanguage))
-            {
                 languages.Insert(0, selectedLanguage);
-            }
 
             return new SelectList(languages, selectedLanguage);
         }
 
         private SelectList GetYearsOfExperienceOptions(string? selectedExperience)
         {
-            var experiences = new List<string>
-    {
-        "0-2",
-        "3-5",
-        "6-10",
-        "10+"
-    };
+            var experiences = new List<string> { "0-2", "3-5", "6-10", "10+" };
 
             if (!string.IsNullOrEmpty(selectedExperience) && !experiences.Contains(selectedExperience))
-            {
                 experiences.Insert(0, selectedExperience);
-            }
 
             return new SelectList(experiences, selectedExperience);
+        }
+
+        private SelectList GetSkillLevelOptions(string? selectedSkillLevel)
+        {
+            var skillLevels = new List<string> { "Beginner", "Intermediate", "Advanced", "Expert" };
+
+            if (!string.IsNullOrEmpty(selectedSkillLevel) && !skillLevels.Contains(selectedSkillLevel))
+                skillLevels.Insert(0, selectedSkillLevel);
+
+            return new SelectList(skillLevels, selectedSkillLevel);
+        }
+
+        private SelectList GetFeePerSessionOptions(int selectedFee)
+        {
+            var fees = new List<int> { 10, 20, 30, 40, 50, 75, 100 };
+
+            if (!fees.Contains(selectedFee))
+                fees.Insert(0, selectedFee);
+
+            return new SelectList(fees, selectedFee);
         }
     }
 }
