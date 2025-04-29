@@ -30,6 +30,13 @@ namespace TechSkillConnect.Pages.Tutorpage
             string tutorData = TempData["Tutor"] as string;
             string tutorProfileData = TempData["TutorProfile"] as string;
 
+            if (string.IsNullOrEmpty(tutorData) || string.IsNullOrEmpty(tutorProfileData))
+            {
+                Console.WriteLine("TempData missing at OnGet.");
+                return RedirectToPage("/Tutorpage/tutor_creating_profile_combined"); // Or an error page
+            }
+
+
             this.Tutor = JsonConvert.DeserializeObject<Tutor>(tutorData) ?? new Tutor();
             this.TutorProfile = JsonConvert.DeserializeObject<TutorProfile>(tutorProfileData) ?? new TutorProfile();
             this.TutorProfile.Tutor = this.Tutor;
@@ -68,6 +75,9 @@ namespace TechSkillConnect.Pages.Tutorpage
 
         public async Task<IActionResult> OnPostConfirmAsync()
         {
+
+            ModelState.Clear();  // 🔥 Add this line at the very top
+
             string currentUserID = User.FindFirstValue(ClaimTypes.NameIdentifier); // Get logged-in user's ID
             string currentUserEmail = User.FindFirstValue(ClaimTypes.Email); // Get the logged-in user's email
 
