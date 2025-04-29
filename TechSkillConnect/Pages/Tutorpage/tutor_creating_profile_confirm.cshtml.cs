@@ -162,7 +162,7 @@ namespace TechSkillConnect.Pages.Tutorpage
                 TempData["TutorProfile"] = JsonConvert.SerializeObject(profile);
 
                 // Redirect to the confirmation page
-                return RedirectToPage("/Tutorpage/tutor_creating_profile_first_payment_result");
+                return RedirectToPage("/Tutorpage/tutor_dashboard");
             }
             catch (Exception ex)
             {
