@@ -25,21 +25,19 @@ namespace TechSkillConnect.Pages.Admin.TutorProfiles
         public string CurrentFilter { get; set; }
         public string CurrentSort { get; set; }
 
-        public PaginatedList<Tutor> Tutors { get; set; } = default!;
+        public List<Tutor> Tutors { get; set; } = new List<Tutor>(); // Change to List, not PaginatedList for now
 
         public async Task<IActionResult> OnGetAsync(string sortOrder, string currentFilter, int? pageIndex)
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            // Check if user is Admin
-            if (userId != "db0c6b20-0021-425e-998e-c3feb36c6364")
+            if (userId != "db0c6b20-0021-425e-998e-c3feb36c6364") // Admin ID
             {
                 return RedirectToPage("/Identity/Account/Login");
             }
 
             CurrentSort = sortOrder;
 
-            // If user types new search, reset page index
             if (!string.IsNullOrEmpty(SearchString))
             {
                 pageIndex = 1;
@@ -51,18 +49,12 @@ namespace TechSkillConnect.Pages.Admin.TutorProfiles
                 CurrentFilter = currentFilter;
             }
 
-            // Query all tutors, whether or not they have a profile
+            // 🔥 Load all tutors, IGNORE filters, whether they have profile or not
             var tutorsIQ = _context.Tutors
-                .Select(t => new Tutor
-                {
-                    TutorID = t.TutorID,
-                    TutorEmail = t.TutorEmail,
-                    Tutor_phone = t.Tutor_phone,
-                    TutorProfile = t.TutorProfile
-                })
+                .IgnoreQueryFilters()
+                .Include(t => t.TutorProfile)
                 .AsNoTracking();
 
-            // Apply search filter if needed
             if (!string.IsNullOrEmpty(SearchString))
             {
                 tutorsIQ = tutorsIQ.Where(t =>
@@ -70,9 +62,11 @@ namespace TechSkillConnect.Pages.Admin.TutorProfiles
                     t.Tutor_phone.Contains(SearchString));
             }
 
-            // Pagination
-            int pageSize = 10;
-            Tutors = await PaginatedList<Tutor>.CreateAsync(tutorsIQ, pageIndex ?? 1, pageSize);
+            // 🛠 Load all tutors into a List (no pagination for now)
+            Tutors = await tutorsIQ.ToListAsync();
+
+            // 🔎 Debugging - print number of tutors loaded
+            System.Diagnostics.Debug.WriteLine($"Total tutors loaded: {Tutors.Count}");
 
             return Page();
         }
