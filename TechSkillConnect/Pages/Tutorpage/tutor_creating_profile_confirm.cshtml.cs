@@ -75,20 +75,34 @@ namespace TechSkillConnect.Pages.Tutorpage
 
         public async Task<IActionResult> OnPostConfirmAsync()
         {
-            ModelState.Clear();  // Clear any validation state at the beginning
+            ModelState.Clear();  // Clear validation state
+
+            Console.WriteLine("OnPostConfirmAsync started...");
+
+            // 🔥 Recover TempData during POST (very important)
+            string tutorData = TempData["Tutor"] as string;
+            string tutorProfileData = TempData["TutorProfile"] as string;
+
+            if (!string.IsNullOrEmpty(tutorData))
+            {
+                this.Tutor = JsonConvert.DeserializeObject<Tutor>(tutorData) ?? new Tutor();
+            }
+            if (!string.IsNullOrEmpty(tutorProfileData))
+            {
+                this.TutorProfile = JsonConvert.DeserializeObject<TutorProfile>(tutorProfileData) ?? new TutorProfile();
+            }
 
             string currentUserID = User.FindFirstValue(ClaimTypes.NameIdentifier);
             string currentUserEmail = User.FindFirstValue(ClaimTypes.Email);
 
             try
             {
-                // ❗ STOP using TempData.Peek() here
-                // Just use this.Tutor and this.TutorProfile (already bound)
-
+                // 🔵 Step 1: Find if Tutor already exists
                 var tutor = await _context.Tutors.FirstOrDefaultAsync(t => t.IdentityID == currentUserID);
 
                 if (tutor == null)
                 {
+                    // 🔵 Step 2: Create new Tutor (DO NOT set TutorID manually)
                     tutor = new Tutor
                     {
                         IdentityID = currentUserID,
@@ -99,27 +113,32 @@ namespace TechSkillConnect.Pages.Tutorpage
                         TutorEmail = currentUserEmail,
                         Tutor_registration_date = DateTime.UtcNow
                     };
+
                     _context.Tutors.Add(tutor);
+                    await _context.SaveChangesAsync(); // 🔥 Save Tutor first so that TutorID is generated
                 }
                 else
                 {
+                    // 🔵 Step 3: Update existing Tutor
                     tutor.Tutor_firstname = this.Tutor.Tutor_firstname;
                     tutor.Tutor_lastname = this.Tutor.Tutor_lastname;
                     tutor.CountryOfBirth = this.Tutor.CountryOfBirth;
                     tutor.Tutor_phone = this.Tutor.Tutor_phone;
                     tutor.TutorEmail = currentUserEmail;
+
+                    await _context.SaveChangesAsync(); // Save updates
                 }
 
-                await _context.SaveChangesAsync();
+                Console.WriteLine($"Tutor saved. TutorID = {tutor?.TutorID}");
 
-                // Tutor Profile
+                // 🔵 Step 4: Save TutorProfile (using correct TutorID)
                 var profile = await _context.TutorProfiles.FirstOrDefaultAsync(p => p.TutorID == tutor.TutorID);
 
                 if (profile == null)
                 {
                     profile = new TutorProfile
                     {
-                        TutorID = tutor.TutorID,
+                        TutorID = tutor.TutorID,  // ✅ Correct real TutorID from DB
                         Language = this.TutorProfile.Language,
                         YearsOfExperience = this.TutorProfile.YearsOfExperience,
                         SkillLevel = this.TutorProfile.SkillLevel,
@@ -127,6 +146,7 @@ namespace TechSkillConnect.Pages.Tutorpage
                         SelfIntro = this.TutorProfile.SelfIntro,
                         SelfHeadline = this.TutorProfile.SelfHeadline
                     };
+
                     _context.TutorProfiles.Add(profile);
                 }
                 else
@@ -139,20 +159,20 @@ namespace TechSkillConnect.Pages.Tutorpage
                     profile.SelfHeadline = this.TutorProfile.SelfHeadline;
                 }
 
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(); // Save TutorProfile
 
-                // Tutor Onboarding
+                // 🔵 Step 5: Update Onboarding
                 var onboarding = await _context.TutorOnboardings.FirstOrDefaultAsync(o => o.UserId == currentUserID);
+
                 if (onboarding != null)
                 {
                     onboarding.IsProfileComplete = true;
                     onboarding.ProfileCompletedAt = DateTime.UtcNow;
-                    await _context.SaveChangesAsync();
+
+                    await _context.SaveChangesAsync(); // Save onboarding update
                 }
 
-                // ✅ NO TempData setting anymore
-
-                // ✅ Finally redirect to Thank You page
+                // 🔵 Step 6: Redirect to Thank You page
                 Console.WriteLine("Saving success, redirecting to Thank You page...");
                 return RedirectToPage("/Tutorpage/ThankYouForRegistration");
             }
@@ -161,9 +181,11 @@ namespace TechSkillConnect.Pages.Tutorpage
                 Console.WriteLine($"Error: {ex.Message}");
                 Console.WriteLine($"StackTrace: {ex.StackTrace}");
                 ModelState.AddModelError("", "An error occurred while processing your request. Please try again.");
-                return Page(); // fallback if a real unexpected error happens
+                return Page(); // Stay on same page if error happens
             }
         }
+
+
 
 
     }
