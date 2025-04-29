@@ -36,21 +36,25 @@ namespace TechSkillConnect.Pages.Admin.TutorProfiles
                 return RedirectToPage("/Identity/Account/Login");
             }
 
+            CurrentSort = sortOrder;
+
+            // If search box has input, treat as a new search
             if (!string.IsNullOrEmpty(SearchString))
             {
                 pageIndex = 1;
+                CurrentFilter = SearchString; // Update filter
             }
             else
             {
-                SearchString = currentFilter;
+                SearchString = currentFilter; // Stay on previous search if paging
+                CurrentFilter = currentFilter; // Keep showing previous filter text
             }
-            CurrentFilter = SearchString;
 
             IQueryable<Tutor> tutorsIQ = _context.Tutors
                 .Include(t => t.TutorProfile)
                 .AsNoTracking();
 
-            // Apply search
+            // ❗ Apply search filter ONLY if SearchString is NOT EMPTY
             if (!string.IsNullOrEmpty(SearchString))
             {
                 tutorsIQ = tutorsIQ.Where(t =>
@@ -58,12 +62,11 @@ namespace TechSkillConnect.Pages.Admin.TutorProfiles
                     t.Tutor_phone.Contains(SearchString));
             }
 
-            // (Optional) Sorting logic can be added here
-
             int pageSize = 10;
             Tutors = await PaginatedList<Tutor>.CreateAsync(tutorsIQ, pageIndex ?? 1, pageSize);
 
             return Page();
         }
+
     }
 }
