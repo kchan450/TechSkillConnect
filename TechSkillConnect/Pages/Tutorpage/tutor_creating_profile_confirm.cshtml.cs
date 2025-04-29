@@ -49,6 +49,7 @@ namespace TechSkillConnect.Pages.Tutorpage
 
             if (string.IsNullOrEmpty(tutorData) || string.IsNullOrEmpty(tutorProfileData))
             {
+                Console.WriteLine("TempData for Tutor or TutorProfile is missing.");
                 ModelState.AddModelError("", "Unable to find the tutor data. Please try again.");
                 return Page();
             }
@@ -101,3 +102,39 @@ namespace TechSkillConnect.Pages.Tutorpage
                     };
                     _context.TutorProfiles.Add(profile);
                 }
+                else
+                {
+                    profile.Language = this.TutorProfile.Language;
+                    profile.YearsOfExperience = this.TutorProfile.YearsOfExperience;
+                    profile.SkillLevel = this.TutorProfile.SkillLevel;
+                    profile.FeePerSession = this.TutorProfile.FeePerSession;
+                    profile.SelfIntro = this.TutorProfile.SelfIntro;
+                    profile.SelfHeadline = this.TutorProfile.SelfHeadline;
+                }
+
+                await _context.SaveChangesAsync();
+
+                var onboarding = await _context.TutorOnboardings.FirstOrDefaultAsync(o => o.UserId == currentUserID);
+                if (onboarding != null)
+                {
+                    onboarding.IsProfileComplete = true;
+                    onboarding.ProfileCompletedAt = DateTime.UtcNow;
+                    await _context.SaveChangesAsync();
+                }
+
+                TempData["Tutor"] = JsonConvert.SerializeObject(tutor);
+                TempData["TutorProfile"] = JsonConvert.SerializeObject(profile);
+
+                // ✅ Correct Redirect: only page name
+                return RedirectToPage("tutor_dashboard");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+                Console.WriteLine($"StackTrace: {ex.StackTrace}");
+                ModelState.AddModelError("", "An error occurred while processing your request. Please try again.");
+                return Page();
+            }
+        }
+    }
+}
