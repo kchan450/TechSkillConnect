@@ -31,30 +31,38 @@ namespace TechSkillConnect.Pages.Admin.TutorProfiles
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            if (userId != "db0c6b20-0021-425e-998e-c3feb36c6364") // Admin ID
+            // Check if user is Admin
+            if (userId != "db0c6b20-0021-425e-998e-c3feb36c6364")
             {
                 return RedirectToPage("/Identity/Account/Login");
             }
 
             CurrentSort = sortOrder;
 
-            // If search box has input, treat as a new search
+            // If user types new search, reset page index
             if (!string.IsNullOrEmpty(SearchString))
             {
                 pageIndex = 1;
-                CurrentFilter = SearchString; // Update filter
+                CurrentFilter = SearchString;
             }
             else
             {
-                SearchString = currentFilter; // Stay on previous search if paging
-                CurrentFilter = currentFilter; // Keep showing previous filter text
+                SearchString = currentFilter;
+                CurrentFilter = currentFilter;
             }
 
-            IQueryable<Tutor> tutorsIQ = _context.Tutors
-                .Include(t => t.TutorProfile)
+            // Query all tutors, whether or not they have a profile
+            var tutorsIQ = _context.Tutors
+                .Select(t => new Tutor
+                {
+                    TutorID = t.TutorID,
+                    TutorEmail = t.TutorEmail,
+                    Tutor_phone = t.Tutor_phone,
+                    TutorProfile = t.TutorProfile
+                })
                 .AsNoTracking();
 
-            // ❗ Apply search filter ONLY if SearchString is NOT EMPTY
+            // Apply search filter if needed
             if (!string.IsNullOrEmpty(SearchString))
             {
                 tutorsIQ = tutorsIQ.Where(t =>
@@ -62,11 +70,11 @@ namespace TechSkillConnect.Pages.Admin.TutorProfiles
                     t.Tutor_phone.Contains(SearchString));
             }
 
+            // Pagination
             int pageSize = 10;
             Tutors = await PaginatedList<Tutor>.CreateAsync(tutorsIQ, pageIndex ?? 1, pageSize);
 
             return Page();
         }
-
     }
 }

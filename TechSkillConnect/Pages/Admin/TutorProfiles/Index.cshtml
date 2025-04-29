@@ -33,12 +33,12 @@
         {
             <tr>
                 <td>@tutor.TutorEmail</td>
-                <td>@(tutor.TutorProfile?.Language ?? "N/A")</td>
-                <td>@(tutor.TutorProfile?.YearsOfExperience ?? "N/A")</td>
-                <td>@(tutor.TutorProfile?.SkillLevel ?? "N/A")</td>
-                <td>@(tutor.TutorProfile != null ? tutor.TutorProfile.FeePerSession.ToString() : "N/A")</td>
-                <td>@(tutor.TutorProfile?.SelfIntro ?? "N/A")</td>
-                <td>@(tutor.TutorProfile?.SelfHeadline ?? "N/A")</td>
+                <td>@(tutor.TutorProfile?.Language ?? "No Record")</td>
+                <td>@(tutor.TutorProfile?.YearsOfExperience ?? "No Record")</td>
+                <td>@(tutor.TutorProfile?.SkillLevel ?? "No Record")</td>
+                <td>@(tutor.TutorProfile != null ? tutor.TutorProfile.FeePerSession.ToString() : "No Record")</td>
+                <td>@(tutor.TutorProfile?.SelfIntro ?? "No Record")</td>
+                <td>@(tutor.TutorProfile?.SelfHeadline ?? "No Record")</td>
                 <td>
                     @if (tutor.TutorProfile != null)
                     {
