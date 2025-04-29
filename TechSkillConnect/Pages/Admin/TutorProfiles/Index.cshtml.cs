@@ -26,7 +26,6 @@ namespace TechSkillConnect.Pages.Admin.TutorProfiles
         public string LanguageSort { get; set; }
         public string YearsOfExperienceSort { get; set; }
         public string SkillLevelSort { get; set; }
-        public string CertificateSort { get; set; }
         public string FeePerSessionSort { get; set; }
         public string SelfIntroSort { get; set; }
         public string SelfHeadlineSort { get; set; }
@@ -36,7 +35,7 @@ namespace TechSkillConnect.Pages.Admin.TutorProfiles
 
         public PaginatedList<TutorProfile> TutorProfiles { get; set; }
 
-        public async Task OnGetAsync(string sortOrder, string currentFilter, string SearchString, int? pageIndex)
+        public async Task OnGetAsync(string sortOrder, string currentFilter, int? pageIndex)
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -50,23 +49,30 @@ namespace TechSkillConnect.Pages.Admin.TutorProfiles
             TutorEmailSort = sortOrder == "tutorEmail" ? "tutorEmail_desc" : "tutorEmail";
             LanguageSort = sortOrder == "language" ? "language_desc" : "language";
             YearsOfExperienceSort = sortOrder == "yearsOfExperience" ? "yearsOfExperience_desc" : "yearsOfExperience";
-            SkillLevelSort = sortOrder == "skillLevel" ? "skillLevel_desc" : "skillLevel";
-            CertificateSort = sortOrder == "certificate" ? "certificate_desc" : "certificate";
-            FeePerSessionSort = sortOrder == "feePerSession" ? "feePerSession_desc" : "feePerSession";
-            SelfIntroSort = sortOrder == "selfIntro" ? "selfIntro_desc" : "selfIntro";
-            SelfHeadlineSort = sortOrder == "selfHeadline" ? "selfHeadline_desc" : "selfHeadline";
+            SkillLevelSort = sortOrder == "skillLevel_desc" ? "skillLevel_desc" : "skillLevel";
+            FeePerSessionSort = sortOrder == "feePerSession_desc" ? "feePerSession" : "feePerSession_desc";
+            SelfIntroSort = sortOrder == "selfIntro_desc" ? "selfIntro" : "selfIntro_desc";
+            SelfHeadlineSort = sortOrder == "selfHeadline_desc" ? "selfHeadline" : "selfHeadline_desc";
 
-            if (SearchString != null)
+            if (!string.IsNullOrEmpty(SearchString))
             {
-                pageIndex = 1;
+                pageIndex = 1; // New search, go back to page 1
             }
             else
             {
-                SearchString = currentFilter;
+                SearchString = currentFilter; // Keep previous search if no new search
             }
             CurrentFilter = SearchString;
 
             IQueryable<TutorProfile> tutorsProfileIQ = _context.TutorProfiles.Include(tp => tp.Tutor);
+
+            // Apply search filter
+            if (!string.IsNullOrEmpty(SearchString))
+            {
+                tutorsProfileIQ = tutorsProfileIQ.Where(tp =>
+                    tp.Tutor.TutorEmail.Contains(SearchString) ||
+                    tp.Tutor.Tutor_phone.Contains(SearchString));
+            }
 
             // Apply sorting
             tutorsProfileIQ = sortOrder switch
@@ -79,8 +85,6 @@ namespace TechSkillConnect.Pages.Admin.TutorProfiles
                 "yearsOfExperience_desc" => tutorsProfileIQ.OrderByDescending(t => t.YearsOfExperience),
                 "skillLevel" => tutorsProfileIQ.OrderBy(t => t.SkillLevel),
                 "skillLevel_desc" => tutorsProfileIQ.OrderByDescending(t => t.SkillLevel),
-                "certificate" => tutorsProfileIQ.OrderBy(t => t.Certificate),
-                "certificate_desc" => tutorsProfileIQ.OrderByDescending(t => t.Certificate),
                 "feePerSession" => tutorsProfileIQ.OrderBy(t => t.FeePerSession),
                 "feePerSession_desc" => tutorsProfileIQ.OrderByDescending(t => t.FeePerSession),
                 "selfIntro" => tutorsProfileIQ.OrderBy(t => t.SelfIntro),
@@ -90,16 +94,9 @@ namespace TechSkillConnect.Pages.Admin.TutorProfiles
                 _ => tutorsProfileIQ.OrderBy(t => t.Language),
             };
 
-            // Apply search filter
-            if (!string.IsNullOrEmpty(SearchString))
-            {
-                tutorsProfileIQ = tutorsProfileIQ.Where(tp =>
-                    tp.Tutor.TutorEmail.Contains(SearchString) ||
-                    tp.Tutor.Tutor_phone.Contains(SearchString));
-            }
-
             int pageSize = 10;
             TutorProfiles = await PaginatedList<TutorProfile>.CreateAsync(tutorsProfileIQ.AsNoTracking(), pageIndex ?? 1, pageSize);
         }
+
     }
 }
