@@ -36,33 +36,49 @@ namespace TechSkillConnect.Pages.Tutorpage
             TempData.Keep("Tutor");
             TempData.Keep("TutorProfile");
 
+            Console.WriteLine("OnGet executed successfully.");
             return Page();
         }
 
         public async Task<IActionResult> OnPostConfirmAsync()
         {
+            Console.WriteLine("OnPostConfirmAsync handler invoked...");
+
             string currentUserID = User.FindFirstValue(ClaimTypes.NameIdentifier);
             string currentUserEmail = User.FindFirstValue(ClaimTypes.Email);
+
+            Console.WriteLine($"User authenticated: {User.Identity.IsAuthenticated}");
+            Console.WriteLine($"CurrentUserID: {currentUserID ?? "null"}");
+            Console.WriteLine($"CurrentUserEmail: {currentUserEmail ?? "null"}");
+
+            if (!User.Identity.IsAuthenticated || string.IsNullOrEmpty(currentUserID))
+            {
+                Console.WriteLine("User is not authenticated. Redirecting to login...");
+                return RedirectToPage("/Account/Login", new { area = "Identity" });
+            }
 
             string tutorData = TempData.Peek("Tutor") as string;
             string tutorProfileData = TempData.Peek("TutorProfile") as string;
 
             if (string.IsNullOrEmpty(tutorData) || string.IsNullOrEmpty(tutorProfileData))
             {
-                Console.WriteLine("TempData for Tutor or TutorProfile is missing.");
+                Console.WriteLine("Tutor or TutorProfile data is missing in TempData.");
                 ModelState.AddModelError("", "Unable to find the tutor data. Please try again.");
                 return Page();
             }
 
             try
             {
+                Console.WriteLine("Deserializing Tutor and TutorProfile data...");
                 this.Tutor = JsonConvert.DeserializeObject<Tutor>(tutorData) ?? new Tutor();
                 this.TutorProfile = JsonConvert.DeserializeObject<TutorProfile>(tutorProfileData) ?? new TutorProfile();
 
+                Console.WriteLine("Looking up tutor in the database...");
                 var tutor = await _context.Tutors.FirstOrDefaultAsync(t => t.IdentityID == currentUserID);
 
                 if (tutor == null)
                 {
+                    Console.WriteLine("Tutor not found. Creating new tutor...");
                     tutor = new Tutor
                     {
                         IdentityID = currentUserID,
@@ -77,6 +93,7 @@ namespace TechSkillConnect.Pages.Tutorpage
                 }
                 else
                 {
+                    Console.WriteLine("Tutor found. Updating tutor details...");
                     tutor.Tutor_firstname = this.Tutor.Tutor_firstname;
                     tutor.Tutor_lastname = this.Tutor.Tutor_lastname;
                     tutor.CountryOfBirth = this.Tutor.CountryOfBirth;
@@ -84,12 +101,17 @@ namespace TechSkillConnect.Pages.Tutorpage
                     tutor.TutorEmail = currentUserEmail;
                 }
 
+                Console.WriteLine("Saving tutor changes to the database...");
                 await _context.SaveChangesAsync();
+                Console.WriteLine("Tutor changes saved successfully.");
+                Console.WriteLine($"TutorID after save: {tutor.TutorID}");
 
+                Console.WriteLine("Looking up tutor profile in the database...");
                 var profile = await _context.TutorProfiles.FirstOrDefaultAsync(p => p.TutorID == tutor.TutorID);
 
                 if (profile == null)
                 {
+                    Console.WriteLine("Tutor profile not found. Creating new profile...");
                     profile = new TutorProfile
                     {
                         TutorID = tutor.TutorID,
@@ -98,41 +120,53 @@ namespace TechSkillConnect.Pages.Tutorpage
                         SkillLevel = this.TutorProfile.SkillLevel,
                         FeePerSession = this.TutorProfile.FeePerSession,
                         SelfIntro = this.TutorProfile.SelfIntro,
-                        SelfHeadline = this.TutorProfile.SelfHeadline
+                        SelfHeadline = this.TutorProfile.SelfHeadline,
+                        Certificate = this.TutorProfile.Certificate
                     };
                     _context.TutorProfiles.Add(profile);
                 }
                 else
                 {
+                    Console.WriteLine("Tutor profile found. Updating profile details...");
                     profile.Language = this.TutorProfile.Language;
                     profile.YearsOfExperience = this.TutorProfile.YearsOfExperience;
                     profile.SkillLevel = this.TutorProfile.SkillLevel;
                     profile.FeePerSession = this.TutorProfile.FeePerSession;
                     profile.SelfIntro = this.TutorProfile.SelfIntro;
                     profile.SelfHeadline = this.TutorProfile.SelfHeadline;
+                    profile.Certificate = this.TutorProfile.Certificate;
                 }
 
+                Console.WriteLine("Saving tutor profile changes to the database...");
                 await _context.SaveChangesAsync();
+                Console.WriteLine("Tutor profile changes saved successfully.");
+                Console.WriteLine($"ProfileID after save: {profile.ProfileID}");
 
-                var onboarding = await _context.TutorOnboardings.FirstOrDefaultAsync(o => o.UserId == currentUserID);
-                if (onboarding != null)
+                Console.WriteLine("Clearing TempData...");
+                TempData.Remove("Tutor");
+                TempData.Remove("TutorProfile");
+
+                if (!ModelState.IsValid)
                 {
-                    onboarding.IsProfileComplete = true;
-                    onboarding.ProfileCompletedAt = DateTime.UtcNow;
-                    await _context.SaveChangesAsync();
+                    Console.WriteLine("ModelState is invalid. Returning to the same page.");
+                    foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+                    {
+                        Console.WriteLine($"ModelState Error: {error.ErrorMessage}");
+                    }
+                    return Page();
                 }
 
-                TempData["Tutor"] = JsonConvert.SerializeObject(tutor);
-                TempData["TutorProfile"] = JsonConvert.SerializeObject(profile);
-
-                // ✅ Correct Redirect: only page name
-                return RedirectToPage("tutor_dashboard");
+                Console.WriteLine("Attempting redirect to tutor_dashboard...");
+                string redirectUrl = "https://techskillconnect-dv4tahcghugwhf6g.canadacentral-01.azurewebsites.net/Tutorpage/tutor_dashboard";
+                var redirectResult = Redirect(redirectUrl);
+                Console.WriteLine($"Redirect result created: {redirectResult?.GetType().Name}");
+                return redirectResult;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error: {ex.Message}");
-                Console.WriteLine($"StackTrace: {ex.StackTrace}");
-                ModelState.AddModelError("", "An error occurred while processing your request. Please try again.");
+                Console.WriteLine($"An error occurred: {ex.Message}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                ModelState.AddModelError("", $"An error occurred while saving your profile: {ex.Message}");
                 return Page();
             }
         }

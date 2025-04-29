@@ -11,74 +11,97 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile Confirmation</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <div class="new-container">
+    <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #007bff;">
+        <a class="navbar-brand text-white" href="#">TechSkillConnect</a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="/Tutorpage">Tutor</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#">Hello @Model.Tutor.TutorEmail!</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="/logout">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
         <header>
             <h1>Confirm Your Profile Information</h1>
         </header>
-    </div>
 
-    <p>Please review your information carefully before proceeding to payment.</p>
+        <p>Please review your information carefully before proceeding to payment.</p>
 
-    <!-- Account Information Section -->
-    <div class="section">
-        <h3>Account Information</h3>
-        <p><strong>Email:</strong> @Model.Tutor.TutorEmail</p>
-    </div>
-
-    <!-- Personal Information Section -->
-    <div class="section">
-        <h3>Personal Information</h3>
-        <p><strong>TutorID:</strong> @Model.Tutor.TutorID</p>
-        <p><strong>First Name:</strong> @Model.Tutor.Tutor_firstname</p>
-        <p><strong>Last Name:</strong> @Model.Tutor.Tutor_lastname</p>
-        <p><strong>Country of Birth:</strong> @Model.Tutor.CountryOfBirth</p>
-        <p><strong>Phone Number:</strong> @(Model.Tutor.Tutor_phone ?? "Not provided")</p>
-    </div>
-
-    <!-- Tutor Profile Description -->
-    <div class="section">
-        <h3>Tutor Profile Description</h3>
-        <p><strong>ProfileID:</strong> @Model.TutorProfile.ProfileID</p>
-        <p><strong>Skill You Teach:</strong> @Model.TutorProfile.Language</p>
-        <p><strong>Years of Experience:</strong> @Model.TutorProfile.YearsOfExperience years</p>
-        <p><strong>Skill Level:</strong> @Model.TutorProfile.SkillLevel</p>
-        <p><strong>Fee Per Session:</strong> $@Model.TutorProfile.FeePerSession CAD</p>
-        <p><strong>Self Introduction:</strong> @Model.TutorProfile.SelfIntro</p>
-        <p><strong>Headline:</strong> @Model.TutorProfile.SelfHeadline</p>
-    </div>
-
-    <!-- Teaching Certification -->
-    <div class="section">
-        <h3>Teaching Certification</h3>
-        <p><strong>Certificate Name:</strong> @(Model.TutorProfile.Certificate ?? "Not provided")</p>
-    </div>
-
-    <!-- Fee Box -->
-    <div class="fee-box">
-        <p>One-Time Registration Fee (for Tutors): <strong>$49.00</strong></p>
-        <p>Monthly Subscription Fee (for Tutors): <strong>$19.00</strong></p>
-    </div>
-
-    <!-- Navigation Buttons -->
-    <div class="button-container">
-        <!-- Back Button -->
-        <button type="button" class="btn btn-success" onclick="goBack()">Back</button>
-
-        <!-- Confirm and Proceed -->
-        <form method="post" asp-page-handler="Confirm" asp-page="/Tutorpage/tutor_dashboard" style="display:inline;">
-            <button type="submit" class="btn btn-primary">
-                Confirm and Proceed Payment
-            </button>
-        </form>
-    </div>
-
-    <!-- JavaScript for Back -->
-    <script>
-        function goBack() {
-            window.history.back();
+        @if (!ModelState.IsValid)
+        {
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+                    {
+                        <li>@error.ErrorMessage</li>
+                    }
+                </ul>
+            </div>
         }
-    </script>
+
+        <div class="section">
+            <h3>Account Information</h3>
+            <p><strong>Email:</strong> @Model.Tutor.TutorEmail</p>
+        </div>
+
+        <div class="section">
+            <h3>Personal Information</h3>
+            <p><strong>TutorID:</strong> @Model.Tutor.TutorID</p>
+            <p><strong>First Name:</strong> @Model.Tutor.Tutor_firstname</p>
+            <p><strong>Last Name:</strong> @Model.Tutor.Tutor_lastname</p>
+            <p><strong>Country of Birth:</strong> @Model.Tutor.CountryOfBirth</p>
+            <p><strong>Phone Number:</strong> @(Model.Tutor.Tutor_phone ?? "Not provided")</p>
+        </div>
+
+        <div class="section">
+            <h3>Tutor Profile Description</h3>
+            <p><strong>ProfileID:</strong> @Model.TutorProfile.ProfileID</p>
+            <p><strong>Skill You Teach:</strong> @Model.TutorProfile.Language</p>
+            <p><strong>Years of Experience:</strong> @Model.TutorProfile.YearsOfExperience years</p>
+            <p><strong>Skill Level:</strong> @Model.TutorProfile.SkillLevel</p>
+            <p><strong>Fee Per Session:</strong> $@Model.TutorProfile.FeePerSession CAD</p>
+            <p><strong>Self Introduction:</strong> @Model.TutorProfile.SelfIntro</p>
+            <p><strong>Headline:</strong> @Model.TutorProfile.SelfHeadline</p>
+        </div>
+
+        <div class="section">
+            <h3>Teaching Certification</h3>
+            <p><strong>Certificate Name:</strong> @(Model.TutorProfile.Certificate ?? "Not provided")</p>
+        </div>
+
+        <div class="fee-box">
+            <p>One-Time Registration Fee (for Tutors): <strong>$49.00</strong></p>
+            <p>Monthly Subscription Fee (for Tutors): <strong>$19.00</strong></p>
+        </div>
+
+        <div class="button-container d-flex justify-content-between mt-4">
+            <button type="button" class="btn btn-success" onclick="goBack()">Back</button>
+
+            <form method="post" asp-page-handler="Confirm" style="display:inline;">
+                <button type="submit" class="btn btn-primary">
+                    Confirm and Proceed Payment
+                </button>
+            </form>
+        </div>
+
+        <script>
+            function goBack() {
+                window.history.back();
+            }
+        </script>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
