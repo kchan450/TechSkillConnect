@@ -10,59 +10,68 @@
 <h4>TutorProfile</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-6">
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="TutorProfile.TutorID" class="control-label"></label>
-                <select asp-for="TutorProfile.TutorID" class="form-control" asp-items="ViewBag.TutorID"></select>
+
+            <!-- Display Tutor Email (readonly) -->
+            <div class="form-group mb-3">
+                <label class="control-label">Tutor Email</label>
+                <input type="text" class="form-control" value="@Model.TutorEmail" disabled />
             </div>
 
-            <div class="form-group">
+            <!-- Hidden TutorID -->
+            <input type="hidden" asp-for="TutorProfile.TutorID" />
+
+            <!-- Skill (Dropdown) -->
+            <div class="form-group mb-3">
                 <label asp-for="TutorProfile.Language" class="control-label">Skill</label>
                 <select asp-for="TutorProfile.Language" class="form-control" asp-items="Model.SkillOptions"></select>
                 <span asp-validation-for="TutorProfile.Language" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
+            <!-- Years of Experience (Dropdown) -->
+            <div class="form-group mb-3">
                 <label asp-for="TutorProfile.YearsOfExperience" class="control-label"></label>
                 <select asp-for="TutorProfile.YearsOfExperience" class="form-control" asp-items="Model.ExperienceOptions"></select>
                 <span asp-validation-for="TutorProfile.YearsOfExperience" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
+            <!-- Skill Level (Dropdown) -->
+            <div class="form-group mb-3">
                 <label asp-for="TutorProfile.SkillLevel" class="control-label"></label>
                 <select asp-for="TutorProfile.SkillLevel" class="form-control" asp-items="Model.SkillLevelOptions"></select>
                 <span asp-validation-for="TutorProfile.SkillLevel" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
+            <!-- Fee Per Session (Dropdown) -->
+            <div class="form-group mb-3">
                 <label asp-for="TutorProfile.FeePerSession" class="control-label"></label>
                 <select asp-for="TutorProfile.FeePerSession" class="form-control" asp-items="Model.FeeOptions"></select>
                 <span asp-validation-for="TutorProfile.FeePerSession" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
+            <!-- Self Intro (Textarea) -->
+            <div class="form-group mb-3">
                 <label asp-for="TutorProfile.SelfIntro" class="control-label"></label>
                 <textarea asp-for="TutorProfile.SelfIntro" class="form-control"></textarea>
                 <span asp-validation-for="TutorProfile.SelfIntro" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
+            <!-- Self Headline (Textbox) -->
+            <div class="form-group mb-3">
                 <label asp-for="TutorProfile.SelfHeadline" class="control-label"></label>
                 <input asp-for="TutorProfile.SelfHeadline" class="form-control" />
                 <span asp-validation-for="TutorProfile.SelfHeadline" class="text-danger"></span>
             </div>
 
+            <!-- Create and Back buttons -->
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
+                <a asp-page="./Index" class="btn btn-secondary ms-2">Back to List</a>
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-page="Index">Back to List</a>
 </div>
 
 @section Scripts {
