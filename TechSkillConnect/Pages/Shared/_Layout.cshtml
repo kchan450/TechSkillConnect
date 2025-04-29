@@ -170,7 +170,26 @@
                             </ul>
                         </li>
                     }
-                 
+                    @if (userRole == "Admin")
+                    {
+                        <li class="nav-item dropdown hover-dropdown">
+                            <a class="nav-link dropdown-toggle text-white fw-bold" href="#" role="button" aria-expanded="false">
+                                Admin
+                            </a>
+                            <ul class="dropdown-menu p-2 shadow" style="width: 180px;">
+                                <!-- reduced width -->
+                                <div class="d-flex flex-wrap gap-2 justify-content-center">
+                                    <!-- tighter gap + center -->
+                                    <a asp-page="/Admin/index" class="text-center text-decoration-none text-dark">
+                                        <div class="admin-tile bg-primary text-white px-3 py-2 rounded">
+                                            <i class="fa fa-cogs fa-lg mb-1"></i><br />
+                                            <span class="small">Admin Home</span>
+                                        </div>
+                                    </a>
+                                </div>
+                            </ul>
+                        </li>
+                    }
                 </ul>
                 <partial name="_LoginPartial" />
             </div>

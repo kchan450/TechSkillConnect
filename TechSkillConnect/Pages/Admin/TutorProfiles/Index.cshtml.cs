@@ -32,7 +32,7 @@ namespace TechSkillConnect.Pages.Admin.TutorProfiles
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             // Only allow Admin to access
-            if (userId != "db0c6b20-0021-425e-998e-c3feb36c6364")
+            if (userId != "b8bb4c3d-1383-489d-b070-7205c81f623b")
             {
                 return RedirectToPage("/Identity/Account/Login");
             }
