@@ -29,6 +29,15 @@ namespace TechSkillConnect.Pages.Tutorpage
             string tutorData = TempData["Tutor"] as string;
             string tutorProfileData = TempData["TutorProfile"] as string;
 
+            Console.WriteLine($"OnGet - Tutor TempData: {(string.IsNullOrEmpty(tutorData) ? "null" : "present")}");
+            Console.WriteLine($"OnGet - TutorProfile TempData: {(string.IsNullOrEmpty(tutorProfileData) ? "null" : "present")}");
+
+            if (string.IsNullOrEmpty(tutorData) || string.IsNullOrEmpty(tutorProfileData))
+            {
+                Console.WriteLine("TempData is missing in OnGet. Redirecting to profile creation page...");
+                return RedirectToPage("/Tutorpage/tutor_creating_profile_combined");
+            }
+
             this.Tutor = JsonConvert.DeserializeObject<Tutor>(tutorData) ?? new Tutor();
             this.TutorProfile = JsonConvert.DeserializeObject<TutorProfile>(tutorProfileData) ?? new TutorProfile();
             this.TutorProfile.Tutor = this.Tutor;
@@ -57,8 +66,11 @@ namespace TechSkillConnect.Pages.Tutorpage
                 return RedirectToPage("/Account/Login", new { area = "Identity" });
             }
 
-            string tutorData = TempData.Peek("Tutor") as string;
-            string tutorProfileData = TempData.Peek("TutorProfile") as string;
+            string tutorData = TempData["Tutor"] as string;
+            string tutorProfileData = TempData["TutorProfile"] as string;
+
+            Console.WriteLine($"OnPostConfirmAsync - Tutor TempData: {(string.IsNullOrEmpty(tutorData) ? "null" : "present")}");
+            Console.WriteLine($"OnPostConfirmAsync - TutorProfile TempData: {(string.IsNullOrEmpty(tutorProfileData) ? "null" : "present")}");
 
             if (string.IsNullOrEmpty(tutorData) || string.IsNullOrEmpty(tutorProfileData))
             {
@@ -146,9 +158,13 @@ namespace TechSkillConnect.Pages.Tutorpage
                 TempData.Remove("Tutor");
                 TempData.Remove("TutorProfile");
 
+                // Clear ModelState for Tutor and TutorProfile to bypass validation
+                ModelState.ClearValidationState(nameof(Tutor));
+                ModelState.ClearValidationState(nameof(TutorProfile));
+
                 if (!ModelState.IsValid)
                 {
-                    Console.WriteLine("ModelState is invalid. Returning to the same page.");
+                    Console.WriteLine("ModelState is invalid after clearing. Returning to the same page.");
                     foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
                     {
                         Console.WriteLine($"ModelState Error: {error.ErrorMessage}");
