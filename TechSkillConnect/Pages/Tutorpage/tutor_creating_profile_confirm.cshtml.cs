@@ -75,31 +75,16 @@ namespace TechSkillConnect.Pages.Tutorpage
 
         public async Task<IActionResult> OnPostConfirmAsync()
         {
+            ModelState.Clear();  // Clear any validation state at the beginning
 
-            ModelState.Clear();  // 🔥 Add this line at the very top
-
-            string currentUserID = User.FindFirstValue(ClaimTypes.NameIdentifier); // Get logged-in user's ID
-            string currentUserEmail = User.FindFirstValue(ClaimTypes.Email); // Get the logged-in user's email
-
-            // Retrieve the Tutor and TutorProfile data from TempData
-            string tutorData = TempData.Peek("Tutor") as string;
-            string tutorProfileData = TempData.Peek("TutorProfile") as string;
-
-            // Check if TempData is null or empty
-            if (string.IsNullOrEmpty(tutorData) || string.IsNullOrEmpty(tutorProfileData))
-            {
-                Console.WriteLine("TempData for Tutor or TutorProfile is null or empty during OnPostConfirmAsync.");
-                ModelState.AddModelError("", "Unable to find the tutor data. Please try again.");
-                return Page(); // Stay on the current page to show the error message
-            }
+            string currentUserID = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            string currentUserEmail = User.FindFirstValue(ClaimTypes.Email);
 
             try
             {
-                // Deserialize data from TempData
-                this.Tutor = JsonConvert.DeserializeObject<Tutor>(tutorData) ?? new Tutor();
-                this.TutorProfile = JsonConvert.DeserializeObject<TutorProfile>(tutorProfileData) ?? new TutorProfile();
+                // ❗ STOP using TempData.Peek() here
+                // Just use this.Tutor and this.TutorProfile (already bound)
 
-                // Update Tutor data if necessary
                 var tutor = await _context.Tutors.FirstOrDefaultAsync(t => t.IdentityID == currentUserID);
 
                 if (tutor == null)
@@ -111,7 +96,7 @@ namespace TechSkillConnect.Pages.Tutorpage
                         Tutor_lastname = this.Tutor.Tutor_lastname,
                         CountryOfBirth = this.Tutor.CountryOfBirth,
                         Tutor_phone = this.Tutor.Tutor_phone,
-                        TutorEmail = currentUserEmail, // Set the email of the logged-in user
+                        TutorEmail = currentUserEmail,
                         Tutor_registration_date = DateTime.UtcNow
                     };
                     _context.Tutors.Add(tutor);
@@ -122,13 +107,12 @@ namespace TechSkillConnect.Pages.Tutorpage
                     tutor.Tutor_lastname = this.Tutor.Tutor_lastname;
                     tutor.CountryOfBirth = this.Tutor.CountryOfBirth;
                     tutor.Tutor_phone = this.Tutor.Tutor_phone;
-                    tutor.TutorEmail = currentUserEmail; // Ensure email is updated with logged-in user's email
+                    tutor.TutorEmail = currentUserEmail;
                 }
 
-                // Save the updated Tutor data
                 await _context.SaveChangesAsync();
 
-                // Now handle TutorProfile
+                // Tutor Profile
                 var profile = await _context.TutorProfiles.FirstOrDefaultAsync(p => p.TutorID == tutor.TutorID);
 
                 if (profile == null)
@@ -155,23 +139,20 @@ namespace TechSkillConnect.Pages.Tutorpage
                     profile.SelfHeadline = this.TutorProfile.SelfHeadline;
                 }
 
-                // Save the updated TutorProfile data
                 await _context.SaveChangesAsync();
 
-                // Update TutorOnboarding record to mark profile as complete
+                // Tutor Onboarding
                 var onboarding = await _context.TutorOnboardings.FirstOrDefaultAsync(o => o.UserId == currentUserID);
                 if (onboarding != null)
                 {
-                    onboarding.IsProfileComplete = true; // Mark the profile as complete
+                    onboarding.IsProfileComplete = true;
                     onboarding.ProfileCompletedAt = DateTime.UtcNow;
                     await _context.SaveChangesAsync();
                 }
 
-                // Optionally store some data in TempData for later use
-                TempData["Tutor"] = JsonConvert.SerializeObject(tutor);
-                TempData["TutorProfile"] = JsonConvert.SerializeObject(profile);
+                // ✅ NO TempData setting anymore
 
-                // Redirect to the confirmation page
+                // ✅ Finally redirect to Thank You page
                 return RedirectToPage("/Tutorpage/ThankYouForRegistration");
             }
             catch (Exception ex)
@@ -179,9 +160,10 @@ namespace TechSkillConnect.Pages.Tutorpage
                 Console.WriteLine($"Error: {ex.Message}");
                 Console.WriteLine($"StackTrace: {ex.StackTrace}");
                 ModelState.AddModelError("", "An error occurred while processing your request. Please try again.");
-                return Page(); // Stay on the current page to show the error message
+                return Page(); // fallback if a real unexpected error happens
             }
         }
+
 
     }
 }
