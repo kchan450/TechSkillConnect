@@ -153,6 +153,7 @@ namespace TechSkillConnect.Pages.Tutorpage
                 // ✅ NO TempData setting anymore
 
                 // ✅ Finally redirect to Thank You page
+                Console.WriteLine("Saving success, redirecting to Thank You page...");
                 return RedirectToPage("/Tutorpage/ThankYouForRegistration");
             }
             catch (Exception ex)
