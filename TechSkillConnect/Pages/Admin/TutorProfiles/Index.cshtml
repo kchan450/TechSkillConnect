@@ -1,6 +1,5 @@
 ﻿@page
 @model TechSkillConnect.Pages.Admin.TutorProfiles.IndexModel
-
 @{
     ViewData["Title"] = "Tutor Profile Index";
 }
@@ -8,127 +7,65 @@
 <h1>Tutor Profile Index</h1>
 
 <p>
-    <a asp-page="Create" class="btn btn-primary">Create New</a>
+    <a class="btn btn-primary" asp-page="/Admin/Tutors/Create">Create New Tutor</a>
 </p>
 
-<!-- 🔹 Search and Filter Form -->
 <form method="get">
-    <div class="form-group">
-        <label>Search Tutor Profiles</label>
-        <input asp-for="SearchString" class="form-control" placeholder="Enter Email or Phone no" />
-    </div>
-
-    <button type="submit" class="btn btn-primary">Apply Filters</button>
+    <input type="text" name="SearchString" value="@Model.CurrentFilter" placeholder="Enter Email or Phone no" class="form-control" />
+    <button type="submit" class="btn btn-primary mt-2">Apply Filters</button>
 </form>
 
-@if (Model.TutorProfiles != null && Model.TutorProfiles.Any())
-{
-    <table class="table">
-        <thead>
+<table class="table mt-4">
+    <thead>
+        <tr>
+            <th>Tutor Email</th>
+            <th>Skill</th>
+            <th>Years Of Experience</th>
+            <th>Skill Level</th>
+            <th>Fee Per Session</th>
+            <th>Self Intro</th>
+            <th>Self Headline</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var tutor in Model.Tutors)
+        {
             <tr>
-                <th>
-                    <a asp-page="./Index" asp-route-sortOrder="@Model.TutorEmailSort"
-                       asp-route-currentFilter="@Model.CurrentFilter" class="sort-link">
-                        <span>Tutor Email</span>
-                        <i class="fa fa-fw fa-sort"></i>
-                    </a>
-                </th>
-                <th>
-                    <a asp-page="./Index" asp-route-sortOrder="@Model.LanguageSort"
-                       asp-route-currentFilter="@Model.CurrentFilter" class="sort-link">
-                        <span>Skill</span>
-                        <i class="fa fa-fw fa-sort"></i>
-                    </a>
-                </th>
-                <th>
-                    <a asp-page="./Index" asp-route-sortOrder="@Model.YearsOfExperienceSort"
-                       asp-route-currentFilter="@Model.CurrentFilter" class="sort-link">
-                        <span>@Html.DisplayNameFor(model => model.TutorProfiles[0].YearsOfExperience)</span>
-                        <i class="fa fa-fw fa-sort"></i>
-                    </a>
-                </th>
-                <th>
-                    <a asp-page="./Index" asp-route-sortOrder="@Model.SkillLevelSort"
-                       asp-route-currentFilter="@Model.CurrentFilter" class="sort-link">
-                        <span>@Html.DisplayNameFor(model => model.TutorProfiles[0].SkillLevel)</span>
-                        <i class="fa fa-fw fa-sort"></i>
-                    </a>
-                </th>
-                <th>
-                    <a asp-page="./Index" asp-route-sortOrder="@Model.FeePerSessionSort"
-                       asp-route-currentFilter="@Model.CurrentFilter" class="sort-link">
-                        <span>@Html.DisplayNameFor(model => model.TutorProfiles[0].FeePerSession)</span>
-                        <i class="fa fa-fw fa-sort"></i>
-                    </a>
-                </th>
-                <th>
-                    <a asp-page="./Index" asp-route-sortOrder="@Model.SelfIntroSort"
-                       asp-route-currentFilter="@Model.CurrentFilter" class="sort-link">
-                        <span>@Html.DisplayNameFor(model => model.TutorProfiles[0].SelfIntro)</span>
-                        <i class="fa fa-fw fa-sort"></i>
-                    </a>
-                </th>
-                <th>
-                    <a asp-page="./Index" asp-route-sortOrder="@Model.SelfHeadlineSort"
-                       asp-route-currentFilter="@Model.CurrentFilter" class="sort-link">
-                        <span>@Html.DisplayNameFor(model => model.TutorProfiles[0].SelfHeadline)</span>
-                        <i class="fa fa-fw fa-sort"></i>
-                    </a>
-                </th>
-                <th></th> <!-- Actions -->
+                <td>@tutor.TutorEmail</td>
+                <td>@(tutor.TutorProfile?.Language ?? "N/A")</td>
+                <td>@(tutor.TutorProfile?.YearsOfExperience ?? "N/A")</td>
+                <td>@(tutor.TutorProfile?.SkillLevel ?? "N/A")</td>
+                <td>@(tutor.TutorProfile != null ? tutor.TutorProfile.FeePerSession.ToString() : "N/A")</td>
+                <td>@(tutor.TutorProfile?.SelfIntro ?? "N/A")</td>
+                <td>@(tutor.TutorProfile?.SelfHeadline ?? "N/A")</td>
+                <td>
+                    @if (tutor.TutorProfile != null)
+                    {
+                        <a class="btn btn-warning btn-sm" asp-page="/Admin/TutorProfiles/Edit" asp-route-id="@tutor.TutorProfile.ProfileID">Edit Profile</a>
+                    }
+                    else
+                    {
+                        <a class="btn btn-success btn-sm" asp-page="/Admin/TutorProfiles/Create" asp-route-tutorId="@tutor.TutorID">Create Profile</a>
+                    }
+                </td>
             </tr>
-        </thead>
+        }
+    </tbody>
+</table>
 
-        <tbody>
-            @foreach (var item in Model.TutorProfiles)
-            {
-                <tr>
-                    <td>@Html.DisplayFor(modelItem => item.Tutor.TutorEmail)</td>
-                    <td>@Html.DisplayFor(modelItem => item.Language)</td> <!-- Skill here -->
-                    <td>@Html.DisplayFor(modelItem => item.YearsOfExperience)</td>
-                    <td>@Html.DisplayFor(modelItem => item.SkillLevel)</td>
-                    <td>@Html.DisplayFor(modelItem => item.FeePerSession)</td>
-                    <td>@Html.DisplayFor(modelItem => item.SelfIntro)</td>
-                    <td>@Html.DisplayFor(modelItem => item.SelfHeadline)</td>
-                    <td>
-                        <a asp-page="./Edit" asp-route-id="@item.ProfileID" class="btn btn-sm btn-warning">Edit</a> |
-                        <a asp-page="./Details" asp-route-id="@item.ProfileID" class="btn btn-sm btn-info">Details</a> |
-                        <a asp-page="./Delete" asp-route-id="@item.ProfileID" class="btn btn-sm btn-danger">Delete</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
-
-@if (Model.TutorProfiles != null && Model.TutorProfiles.Any())
+@if (Model.Tutors.TotalPages > 1)
 {
-    <nav aria-label="Page navigation">
-        <ul class="pagination justify-content-center">
-            <li class="page-item @(Model.TutorProfiles.HasPreviousPage ? "" : "disabled")">
-                <a class="page-link" asp-page="./Index"
-                   asp-route-sortOrder="@Model.CurrentSort"
-                   asp-route-pageIndex="@(Model.TutorProfiles.PageIndex - 1)"
-                   asp-route-currentFilter="@Model.CurrentFilter"
-                   aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                    <span class="visually-hidden">Previous</span>
-                </a>
+    <nav>
+        <ul class="pagination">
+            <li class="page-item @(Model.Tutors.HasPreviousPage ? "" : "disabled")">
+                <a class="page-link" asp-route-pageIndex="@(Model.Tutors.PageIndex - 1)">«</a>
             </li>
             <li class="page-item disabled">
-                <span class="page-link">
-                    Page @Model.TutorProfiles.PageIndex
-                </span>
+                <span class="page-link">Page @Model.Tutors.PageIndex</span>
             </li>
-            <li class="page-item @(Model.TutorProfiles.HasNextPage ? "" : "disabled")">
-                <a class="page-link" asp-page="./Index"
-                   asp-route-sortOrder="@Model.CurrentSort"
-                   asp-route-pageIndex="@(Model.TutorProfiles.PageIndex + 1)"
-                   asp-route-currentFilter="@Model.CurrentFilter"
-                   aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                    <span class="visually-hidden">Next</span>
-                </a>
+            <li class="page-item @(Model.Tutors.HasNextPage ? "" : "disabled")">
+                <a class="page-link" asp-route-pageIndex="@(Model.Tutors.PageIndex + 1)">»</a>
             </li>
         </ul>
     </nav>
