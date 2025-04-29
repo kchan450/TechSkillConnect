@@ -51,13 +51,17 @@ namespace TechSkillConnect.Pages.Tutorpage
         public async Task<IActionResult> OnPostAsync()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            // Skip validating fields that won't be posted
             ModelState.Remove("Tutor.IdentityID");
             ModelState.Remove("Tutor.TutorProfile");
+
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
+            // Get the Tutor record based on logged-in user
             var tutor = await _context.Tutors.FirstOrDefaultAsync(t => t.IdentityID == userId);
 
             if (tutor == null)
@@ -65,21 +69,25 @@ namespace TechSkillConnect.Pages.Tutorpage
                 return RedirectToPage("/Tutorpage/TutorCreatingProfile");
             }
 
+            // Update tutor fields
             tutor.Tutor_firstname = Tutor.Tutor_firstname;
             tutor.Tutor_lastname = Tutor.Tutor_lastname;
             tutor.TutorEmail = Tutor.TutorEmail;
             tutor.Tutor_phone = Tutor.Tutor_phone;
             tutor.CountryOfBirth = Tutor.CountryOfBirth;
 
+            // Get TutorProfile based on TutorID
             var profile = await _context.TutorProfiles.FirstOrDefaultAsync(p => p.TutorID == tutor.TutorID);
 
             if (profile == null)
             {
+                // New profile case
                 TutorProfile.TutorID = tutor.TutorID;
                 _context.TutorProfiles.Add(TutorProfile);
             }
             else
             {
+                // Update existing profile
                 profile.Language = TutorProfile.Language;
                 profile.YearsOfExperience = TutorProfile.YearsOfExperience;
                 profile.SkillLevel = TutorProfile.SkillLevel;
@@ -92,5 +100,6 @@ namespace TechSkillConnect.Pages.Tutorpage
 
             return RedirectToPage("/Tutorpage/tutor_dashboard");
         }
+
     }
 }
