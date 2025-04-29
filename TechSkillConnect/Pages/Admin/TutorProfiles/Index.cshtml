@@ -6,9 +6,6 @@
 
 <h1>Tutor Profile Index</h1>
 
-<p>
-    <a class="btn btn-primary" asp-page="/Admin/Tutors/Create">Create New Tutor</a>
-</p>
 
 <form method="get">
     <input type="text" name="SearchString" value="@Model.CurrentFilter" placeholder="Enter Email or Phone no" class="form-control" />
@@ -33,21 +30,22 @@
         {
             <tr>
                 <td>@tutor.TutorEmail</td>
-                <td>@(tutor.TutorProfile?.Language ?? "No Record")</td>
-                <td>@(tutor.TutorProfile?.YearsOfExperience ?? "No Record")</td>
-                <td>@(tutor.TutorProfile?.SkillLevel ?? "No Record")</td>
-                <td>@(tutor.TutorProfile != null ? tutor.TutorProfile.FeePerSession.ToString() : "No Record")</td>
-                <td>@(tutor.TutorProfile?.SelfIntro ?? "No Record")</td>
-                <td>@(tutor.TutorProfile?.SelfHeadline ?? "No Record")</td>
+                <td>@(tutor.TutorProfile?.Language ?? "")</td>
+                <td>@(tutor.TutorProfile?.YearsOfExperience ?? "")</td>
+                <td>@(tutor.TutorProfile?.SkillLevel ?? "")</td>
+                <td>@(tutor.TutorProfile != null ? tutor.TutorProfile.FeePerSession.ToString() : "")</td>
+                <td>@(tutor.TutorProfile?.SelfIntro ?? "")</td>
+                <td>@(tutor.TutorProfile?.SelfHeadline ?? "")</td>
                 <td>
                     @if (tutor.TutorProfile != null)
                     {
-                        <a class="btn btn-warning btn-sm" asp-page="/Admin/TutorProfiles/Edit" asp-route-id="@tutor.TutorProfile.ProfileID">Edit Profile</a>
+                        <a class="btn btn-warning btn-sm me-1" asp-page="/Admin/TutorProfiles/Edit" asp-route-id="@tutor.TutorProfile.ProfileID">Edit Profile</a>
                     }
                     else
                     {
-                        <a class="btn btn-success btn-sm" asp-page="/Admin/TutorProfiles/Create" asp-route-tutorId="@tutor.TutorID">Create Profile</a>
+                        <a class="btn btn-success btn-sm me-1" asp-page="/Admin/TutorProfiles/Create" asp-route-tutorId="@tutor.TutorID">Create Profile</a>
                     }
+                    <a class="btn btn-danger btn-sm" asp-page="/Admin/Tutors/Delete" asp-route-id="@tutor.TutorID">Delete Tutor</a>
                 </td>
             </tr>
         }

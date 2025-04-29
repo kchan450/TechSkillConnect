@@ -22,16 +22,17 @@ namespace TechSkillConnect.Pages.Admin.TutorProfiles
         [BindProperty(SupportsGet = true)]
         public string? SearchString { get; set; }
 
-        public string CurrentFilter { get; set; }
-        public string CurrentSort { get; set; }
+        public string CurrentFilter { get; set; } = string.Empty;
+        public string CurrentSort { get; set; } = string.Empty;
 
-        public List<Tutor> Tutors { get; set; } = new List<Tutor>(); // Change to List, not PaginatedList for now
+        public PaginatedList<Tutor> Tutors { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(string sortOrder, string currentFilter, int? pageIndex)
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            if (userId != "db0c6b20-0021-425e-998e-c3feb36c6364") // Admin ID
+            // Only allow Admin to access
+            if (userId != "db0c6b20-0021-425e-998e-c3feb36c6364")
             {
                 return RedirectToPage("/Identity/Account/Login");
             }
@@ -49,12 +50,13 @@ namespace TechSkillConnect.Pages.Admin.TutorProfiles
                 CurrentFilter = currentFilter;
             }
 
-            // 🔥 Load all tutors, IGNORE filters, whether they have profile or not
+            // 🔥 Load all tutors, include TutorProfile if exists
             var tutorsIQ = _context.Tutors
                 .IgnoreQueryFilters()
                 .Include(t => t.TutorProfile)
                 .AsNoTracking();
 
+            // 🔍 Apply search if needed
             if (!string.IsNullOrEmpty(SearchString))
             {
                 tutorsIQ = tutorsIQ.Where(t =>
@@ -62,11 +64,8 @@ namespace TechSkillConnect.Pages.Admin.TutorProfiles
                     t.Tutor_phone.Contains(SearchString));
             }
 
-            // 🛠 Load all tutors into a List (no pagination for now)
-            Tutors = await tutorsIQ.ToListAsync();
-
-            // 🔎 Debugging - print number of tutors loaded
-            System.Diagnostics.Debug.WriteLine($"Total tutors loaded: {Tutors.Count}");
+            int pageSize = 10; // 10 tutors per page
+            Tutors = await PaginatedList<Tutor>.CreateAsync(tutorsIQ, pageIndex ?? 1, pageSize);
 
             return Page();
         }
