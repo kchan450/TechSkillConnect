@@ -17,14 +17,15 @@
         <header>
             <h1>Confirm Your Profile Information</h1>
         </header>
+
     </div>
-
     <p>Please review your information carefully before proceeding to payment.</p>
-
     <!-- Account Information Section -->
     <div class="section">
         <h3>Account Information</h3>
+        @*       <p><strong>Username:</strong> @Model.Tutor.Tutor_username</p> *@
         <p><strong>Email:</strong> @Model.Tutor.TutorEmail</p>
+        <!-- Password is not displayed for security reasons -->
     </div>
 
     <!-- Personal Information Section -->
@@ -49,36 +50,44 @@
         <p><strong>Headline:</strong> @Model.TutorProfile.SelfHeadline</p>
     </div>
 
-    <!-- Teaching Certification -->
+    <!-- Teaching Certification (Optional) -->
     <div class="section">
         <h3>Teaching Certification</h3>
         <p><strong>Certificate Name:</strong> @(Model.TutorProfile.Certificate ?? "Not provided")</p>
     </div>
 
-    <!-- Fee Box -->
+    <!-- One-Time Registration Fee and Monthly Subscription Fee Section -->
     <div class="fee-box">
         <p>One-Time Registration Fee (for Tutors): <strong>$49.00</strong></p>
         <p>Monthly Subscription Fee (for Tutors): <strong>$19.00</strong></p>
     </div>
 
+
+
     <!-- Navigation Buttons -->
     <div class="button-container">
-        <!-- Back Button -->
+
+        <!-- Back Button using JavaScript -->
         <button type="button" class="btn btn-success" onclick="goBack()">Back</button>
 
-        <!-- Confirm and Proceed -->
-        <form method="post" asp-page-handler="Confirm" asp-page="/Tutorpage/tutor_dashboard" style="display:inline;">
-            <button type="submit" class="btn btn-primary">
+        <!-- Confirm and Proceed to Payment -->
+        <form method="post">
+            <button type="submit" asp-page-handler="Confirm" class="btn btn-primary">
                 Confirm and Proceed Payment
             </button>
         </form>
+
     </div>
 
-    <!-- JavaScript for Back -->
+    <!-- JavaScript Function to Go Back -->
     <script>
         function goBack() {
             window.history.back();
         }
     </script>
+
+
 </body>
 </html>
+
+
